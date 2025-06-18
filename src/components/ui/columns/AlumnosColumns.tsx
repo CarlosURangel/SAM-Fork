@@ -1,14 +1,14 @@
 // src/components/ui/columns/AlumnosColumns.ts
 
-import { ColumnDef } from "@tanstack/react-table"
-import Link from "next/link"
+import { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 
 export type Alumno = {
-  expediente: string
-  nombre: string
-  carrera: string
-  semestre: string
-}
+  expediente: string;
+  nombre: string;
+  carrera: string;
+  semestre: string;
+};
 
 export const columnasAlumnos: ColumnDef<Alumno>[] = [
   {
@@ -50,7 +50,7 @@ export const columnasAlumnos: ColumnDef<Alumno>[] = [
     ),
   },
   {
-     id: "registrar",
+    id: "registrar",
     cell: ({ row }) => (
       <Link
         href={`/alumnos/${row.original.expediente}/registrar`}
@@ -60,4 +60,4 @@ export const columnasAlumnos: ColumnDef<Alumno>[] = [
       </Link>
     ),
   },
-]
+];
