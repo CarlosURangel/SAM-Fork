@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { AsesoriasPorMateriaChart } from "@/components/ui/materiaChart";
 import { AsesoriasPorDocenteChart } from "@/components/ui/docenteChart";
+import Sidebar from "@/components/ui/sidebar";
+import Chart from "@/components/chart-bar-mixed";
 
 //datos de ejemplo
 const datosMateria = [
@@ -52,20 +54,29 @@ export default function Home() {
   ];
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4"> Alumnos</h1>
-      <DataTable columns={columnasAlumnos} data={datos} />
+    <div className="min-h-screen">
+      {/* Sidebar fijo */}
+      <Sidebar />
 
-      <div className="mt-8">
-        <Button>Click me</Button>
-        <Textarea />
-      </div>
-      <div className="w-7/12">
-        <AsesoriasPorMateriaChart data={datosMateria} />
-      </div>
-      <AsesoriasPorDocenteChart data={datosDocentes} />
+      {/* Contenido con padding para no quedar debajo del sidebar */}
+      <main className="pl-64 p-6 bg-gray-50">
+        <h1 className="text-2xl font-bold mb-4">Alumnos</h1>
+        <DataTable columns={columnasAlumnos} data={datos} />
+        <Chart />s
+        <div className="mt-8 flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col gap-4 w-full lg:w-5/12">
+            <Button>Click me</Button>
+            <Textarea />
+          </div>
 
-      {/* <AsesoriasPorDocenteChart data ={AsesoriaDocenteData}/> */}
+          <div className="w-full lg:w-7/12">
+            <AsesoriasPorMateriaChart data={datosMateria} />
+          </div>
+        </div>
+        <div className="mt-8">
+          <AsesoriasPorDocenteChart data={datosDocentes} />
+        </div>
+      </main>
     </div>
   );
 }
