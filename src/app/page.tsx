@@ -7,8 +7,8 @@ import {
 import { DataTable } from "@/components/ui/dataTable";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { AsesoriasPorMateriaChart } from "@/components/ui/materiaChart";
-import { AsesoriasPorDocenteChart } from "@/components/ui/docenteChart";
+import { AsesoriasPorDocenteChart } from "@/components/ui/materiaChart";
+// import { AsesoriasPorDocenteChart } from "@/components/ui/docenteChart";
 import Sidebar from "@/components/ui/sidebar";
 import Chart from "@/components/chart-bar-mixed";
 
@@ -23,6 +23,29 @@ const datosMateria = [
 ];
 
 const datosDocentes = [
+  { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
+  { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
+  { nombre: "Carlo Giovanni Cetina", total: 17 },
+  { nombre: "Cesar Estevez Serrato", total: 14 },
+  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
+  { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
+  { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
+  { nombre: "Carlo Giovanni Cetina", total: 17 },
+  { nombre: "Cesar Estevez Serrato", total: 14 },
+  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
+  { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
+  { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
+  { nombre: "Carlo Giovanni Cetina", total: 17 },
+  { nombre: "Cesar Estevez Serrato", total: 14 },
+  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
+  { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
+  { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
+  { nombre: "Carlo Giovanni Cetina", total: 17 },
+  { nombre: "Cesar Estevez Serrato", total: 14 },
+  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
+  { nombre: "Carlo Giovanni Cetina", total: 17 },
+  { nombre: "Cesar Estevez Serrato", total: 14 },
+  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
   { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
   { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
   { nombre: "Carlo Giovanni Cetina", total: 17 },
@@ -62,7 +85,7 @@ export default function Home() {
       <main className="pl-64 p-6 bg-gray-50">
         <h1 className="text-2xl font-bold mb-4">Alumnos</h1>
         <DataTable columns={columnasAlumnos} data={datos} />
-        <Chart />s
+        <Chart />
         <div className="mt-8 flex flex-col lg:flex-row gap-8">
           <div className="flex flex-col gap-4 w-full lg:w-5/12">
             <Button>Click me</Button>
@@ -70,7 +93,7 @@ export default function Home() {
           </div>
 
           <div className="w-full lg:w-7/12">
-            <AsesoriasPorMateriaChart data={datosMateria} />
+            {/* <AsesoriasPorMateriaChart data={datosMateria} /> */}
           </div>
         </div>
         <div className="mt-8">

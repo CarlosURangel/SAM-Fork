@@ -23,6 +23,31 @@ const chartData = [
   { browser: "firefox", visitors: 187, fill: "#3b82f6" },
   { browser: "edge", visitors: 173, fill: "#2563eb" },
   { browser: "other", visitors: 90, fill: "#1d4ed8" },
+  { browser: "edge", visitors: 173, fill: "#2563eb" },
+  { browser: "chrome", visitors: 275, fill: "#93c5fd" },
+  { browser: "safari", visitors: 200, fill: "#60a5fa" },
+  { browser: "firefox", visitors: 187, fill: "#3b82f6" },
+  { browser: "edge", visitors: 173, fill: "#2563eb" },
+  { browser: "other", visitors: 90, fill: "#1d4ed8" },
+  { browser: "edge", visitors: 173, fill: "#2563eb" },
+  { browser: "chrome", visitors: 275, fill: "#93c5fd" },
+  { browser: "safari", visitors: 200, fill: "#60a5fa" },
+  { browser: "firefox", visitors: 187, fill: "#3b82f6" },
+  { browser: "edge", visitors: 173, fill: "#2563eb" },
+  { browser: "other", visitors: 90, fill: "#1d4ed8" },
+  { browser: "edge", visitors: 173, fill: "#2563eb" },
+  { browser: "chrome", visitors: 275, fill: "#93c5fd" },
+  { browser: "safari", visitors: 200, fill: "#60a5fa" },
+  { browser: "firefox", visitors: 187, fill: "#3b82f6" },
+  { browser: "edge", visitors: 173, fill: "#2563eb" },
+  { browser: "other", visitors: 90, fill: "#1d4ed8" },
+  { browser: "edge", visitors: 173, fill: "#2563eb" },
+  { browser: "chrome", visitors: 275, fill: "#93c5fd" },
+  { browser: "safari", visitors: 200, fill: "#60a5fa" },
+  { browser: "firefox", visitors: 187, fill: "#3b82f6" },
+  { browser: "edge", visitors: 173, fill: "#2563eb" },
+  { browser: "other", visitors: 90, fill: "#1d4ed8" },
+  { browser: "edge", visitors: 173, fill: "#2563eb" },
 ];
 
 const chartConfig = {
@@ -30,7 +55,7 @@ const chartConfig = {
     label: "Visitors",
   },
   chrome: {
-    label: "Chrome",
+    label: "Viviana Michell... ",
     color: "hsl(var(--chart-1))",
   },
   safari: {
@@ -53,7 +78,7 @@ const chartConfig = {
 
 export default function Component() {
   return (
-    <Card >
+    <Card>
       <CardHeader>
         <CardTitle>Bar Chart - Mixed</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
@@ -66,7 +91,7 @@ export default function Component() {
             layout="vertical"
             margin={{
               left: 0,
-              right: 30
+              right: 30,
             }}
           >
             <YAxis
