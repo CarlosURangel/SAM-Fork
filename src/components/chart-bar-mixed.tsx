@@ -17,85 +17,79 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "#93c5fd" },
-  { browser: "safari", visitors: 200, fill: "#60a5fa" },
-  { browser: "firefox", visitors: 187, fill: "#3b82f6" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
-  { browser: "other", visitors: 90, fill: "#1d4ed8" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
-  { browser: "chrome", visitors: 275, fill: "#93c5fd" },
-  { browser: "safari", visitors: 200, fill: "#60a5fa" },
-  { browser: "firefox", visitors: 187, fill: "#3b82f6" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
-  { browser: "other", visitors: 90, fill: "#1d4ed8" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
-  { browser: "chrome", visitors: 275, fill: "#93c5fd" },
-  { browser: "safari", visitors: 200, fill: "#60a5fa" },
-  { browser: "firefox", visitors: 187, fill: "#3b82f6" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
-  { browser: "other", visitors: 90, fill: "#1d4ed8" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
-  { browser: "chrome", visitors: 275, fill: "#93c5fd" },
-  { browser: "safari", visitors: 200, fill: "#60a5fa" },
-  { browser: "firefox", visitors: 187, fill: "#3b82f6" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
-  { browser: "other", visitors: 90, fill: "#1d4ed8" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
-  { browser: "chrome", visitors: 275, fill: "#93c5fd" },
-  { browser: "safari", visitors: 200, fill: "#60a5fa" },
-  { browser: "firefox", visitors: 187, fill: "#3b82f6" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
-  { browser: "other", visitors: 90, fill: "#1d4ed8" },
-  { browser: "edge", visitors: 173, fill: "#2563eb" },
+
+// Datos de asesorías combinados para el nuevo gráfico
+const combinedAsesoriasData = [
+  { subject: "IA", count: 18, fill: "#ffff99" },
+  { subject: "POO", count: 14, fill: "#ff7f00" },
+  { subject: "Cálculo", count: 15, fill: "#6a3d9a" },
+  { subject: "Álgebra Lineal", count: 10, fill: "#b15928" },
+  { subject: "Redes", count: 14, fill: "#fb9a99" },
+  { subject: "Bases de Datos", count: 12, fill: "#1f78b4" },
+  { subject: "Estructuras de Datos", count: 16, fill: "#33a02c" },
+  { subject: "Sistemas Operativos", count: 11, fill: "#e31a1c" },
+  { subject: "Desarrollo Web", count: 6, fill: "#bebada" },
+  { subject: "Ingeniería de Software", count: 12, fill: "#fdb462" },
+  { subject: "Sistemas Distribuidos", count: 11, fill: "#bc80bd" },
+  { subject: "Análisis de Algoritmos", count: 14, fill: "#4daf4a" },
+  { subject: "Robótica", count: 10, fill: "#9c27b0" },
+  { subject: "Metodologías Ágiles", count: 12, fill: "#8ac926" },
+  { subject: "Ciencia de Datos", count: 8, fill: "#8338ec" },
+  { subject: "Criptografía", count: 9, fill: "#4da6ff" },
+  { subject: "Compiladores", count: 7, fill: "#377eb8" },
 ];
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Viviana Michell... ",
+  count: {
+    label: "Cantidad de Asesorías",
     color: "hsl(var(--chart-1))",
   },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
+  // La propiedad 'subject' ahora se usa como la clave para los colores y etiquetas
+  IA: { label: "Inteligencia Artificial", color: "#ffff99" },
+  POO: { label: "Programación Orientada a Objetos", color: "#ff7f00" },
+  Cálculo: { label: "Cálculo", color: "#6a3d9a" },
+  "Álgebra Lineal": { label: "Álgebra Lineal", color: "#b15928" },
+  Redes: { label: "Redes de Computadoras", color: "#fb9a99" },
+  "Bases de Datos": { label: "Bases de Datos", color: "#1f78b4" },
+  "Estructuras de Datos": { label: "Estructuras de Datos", color: "#33a02c" },
+  "Sistemas Operativos": { label: "Sistemas Operativos", color: "#e31a1c" },
+  "Desarrollo Web": { label: "Desarrollo Web", color: "#bebada" },
+  "Ingeniería de Software": {
+    label: "Ingeniería de Software",
+    color: "#fdb462",
   },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
+  "Sistemas Distribuidos": { label: "Sistemas Distribuidos", color: "#bc80bd" },
+  "Análisis de Algoritmos": {
+    label: "Análisis de Algoritmos",
+    color: "#4daf4a",
   },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
+  Robótica: { label: "Robótica", color: "#9c27b0" },
+  "Metodologías Ágiles": { label: "Metodologías Ágiles", color: "#8ac926" },
+  "Ciencia de Datos": { label: "Ciencia de Datos", color: "#8338ec" },
+  Criptografía: { label: "Criptografía", color: "#4da6ff" },
+  Compiladores: { label: "Compiladores", color: "#377eb8" },
 } satisfies ChartConfig;
 
 export default function Component() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bar Chart - Mixed</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Número total de asesorías por materia</CardTitle>
+        <CardDescription>Enero - Junio 2025</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig as ChartConfig}>
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={combinedAsesoriasData}
             layout="vertical"
             margin={{
-              left: 0,
+              left: 40,
               right: 30,
             }}
           >
             <YAxis
-              dataKey="browser"
+              dataKey="subject"
               type="category"
               tickLine={false}
               tickMargin={10}
@@ -104,26 +98,26 @@ export default function Component() {
                 chartConfig[value as keyof typeof chartConfig]?.label
               }
             />
-            <XAxis dataKey="visitors" type="number" hide />
+            <XAxis dataKey="count" type="number" hide />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
             <Bar
-              dataKey="visitors"
+              dataKey="count"
               layout="vertical"
-              fill="var(--color-visitors)"
               radius={4}
+              fill="var(--color-count)"
             >
-              <LabelList
-                dataKey="month"
+              {/* <LabelList
+                dataKey="subject"
                 position="insideLeft"
                 offset={8}
-                className="fill-(--color-label)"
+                className="fill-foreground/80"
                 fontSize={12}
-              />
+              /> */}
               <LabelList
-                dataKey="visitors"
+                dataKey="count"
                 position="right"
                 offset={8}
                 className="fill-foreground"
@@ -133,14 +127,6 @@ export default function Component() {
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 }

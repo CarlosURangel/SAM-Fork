@@ -16,10 +16,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 
-// 🎯 Colores para la gráfica de pie
 const PIE_COLORS = ["#93c5fd", "#60a5fa", "#3b82f6", "#2563eb", "#1d4ed8"];
 
-// 📌 Datos de ejemplo para materias por profesor
 const materiasPorProfesor: Record<string, { name: string; value: number }[]> = {
   "Juan Pérez": [
     { name: "Matemáticas", value: 5 },
@@ -48,7 +46,6 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-// 🔹 Tooltip personalizado con gráfica de pie
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const profesor = payload[0].payload.nombre;
@@ -58,27 +55,27 @@ const CustomTooltip = ({ active, payload }: any) => {
       <div className="bg-white p-3 rounded-md shadow-md border">
         <strong className="block mb-2">{profesor}</strong>
 
-        {/* Aquí renderizamos la gráfica de pie de forma independiente */}
-        <PieChart width={220} height={200}>
-          <Pie
-            data={pieData}
-            cx="50%"
-            cy="50%"
-            outerRadius={70}
-            dataKey="value"
-            label={({ name, percent }) =>
-              `${name} ${(percent * 100).toFixed(0)}%`
-            }
-          >
-            {pieData.map((_, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={PIE_COLORS[index % PIE_COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Legend />
-        </PieChart>
+        <ChartContainer
+          config={{
+            materias: { label: "Materias" },
+            ...pieData.reduce((acc, item, i) => {
+              acc[item.name] = { label: item.name, color: PIE_COLORS[i] };
+              return acc;
+            }, {} as Record<string, { label: string; color: string }>),
+          }}
+          className="mx-auto aspect-square max-h-[150px]"
+        >
+          <PieChart>
+            <Pie
+              data={pieData.map((m, i) => ({
+                ...m,
+                fill: PIE_COLORS[i % PIE_COLORS.length],
+              }))}
+              dataKey="value"
+            />
+            <Legend />
+          </PieChart>
+        </ChartContainer>
       </div>
     );
   }
@@ -129,7 +126,6 @@ export function AsesoriasPorDocenteChart({ data }: Props) {
               axisLine={false}
             />
             <YAxis hide />
-            {/* Tooltip modificado */}
             <ReTooltip content={<CustomTooltip />} />
             <Bar dataKey="total" fill="var(--color-total)" radius={8}>
               <LabelList

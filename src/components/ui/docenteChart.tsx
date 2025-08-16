@@ -7,15 +7,28 @@ import {
   YAxis,
   CartesianGrid,
   LabelList,
-  Customized,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  Tooltip as ReTooltip,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+
+const PIE_COLORS = ["#93c5fd", "#60a5fa", "#3b82f6", "#2563eb", "#1d4ed8"];
+
+const materiasPorProfesor: Record<string, { name: string; value: number }[]> = {
+  "Juan Pérez": [
+    { name: "Matemáticas", value: 5 },
+    { name: "Física", value: 3 },
+    { name: "Química", value: 2 },
+  ],
+  "María López": [
+    { name: "Historia", value: 4 },
+    { name: "Geografía", value: 6 },
+  ],
+};
 
 interface DocenteData {
   nombre: string;
@@ -33,13 +46,49 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const profesor = payload[0].payload.nombre;
+    const pieData = materiasPorProfesor[profesor] || [];
+
+    return (
+      <div className="bg-white p-3 rounded-md shadow-md border">
+        <strong className="block mb-2">{profesor}</strong>
+
+        {/* Aquí renderizamos la gráfica de pie de forma independiente */}
+        <PieChart width={220} height={200}>
+          <Pie
+            data={pieData}
+            cx="50%"
+            cy="50%"
+            outerRadius={70}
+            dataKey="value"
+            label={({ name, percent }) =>
+              `${name} ${(percent * 100).toFixed(0)}%`
+            }
+          >
+            {pieData.map((_, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={PIE_COLORS[index % PIE_COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Legend />
+        </PieChart>
+      </div>
+    );
+  }
+  return null;
+};
+
 export function AsesoriasPorDocenteChart({ data }: Props) {
   const datosOrdenados = [...data].sort((a, b) => b.total - a.total);
 
   // Función para cortar el nombre si es muy largo
   const renderCustomTick = (props: any) => {
     const { x, y, payload } = props;
-    const maxLength = 10; // cantidad de caracteres máximos a mostrar
+    const maxLength = 10;
     const shortLabel =
       payload.value.length > maxLength
         ? payload.value.substring(0, maxLength) + "…"
@@ -77,7 +126,8 @@ export function AsesoriasPorDocenteChart({ data }: Props) {
               axisLine={false}
             />
             <YAxis hide />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            {/* Tooltip modificado */}
+            <ReTooltip content={<CustomTooltip />} />
             <Bar dataKey="total" fill="var(--color-total)" radius={8}>
               <LabelList
                 dataKey="total"

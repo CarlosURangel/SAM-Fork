@@ -7,10 +7,11 @@ import {
 import { DataTable } from "@/components/ui/dataTable";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { AsesoriasPorDocenteChart } from "@/components/ui/materiaChart";
+import { AsesoriasPorDocenteChart } from "@/components/ui/MateriaChart";
 // import { AsesoriasPorDocenteChart } from "@/components/ui/docenteChart";
-import Sidebar from "@/components/ui/sidebar";
-import Chart from "@/components/chart-bar-mixed";
+import Sidebar from "@/components/ui/Sidebar";
+import Chart from "@/components/Chart-bar-mixed";
+import { AsesoriasChart } from "@/components/Asesorias-chart";
 
 //datos de ejemplo
 const datosMateria = [
@@ -97,7 +98,8 @@ export default function Home() {
           </div>
         </div>
         <div className="mt-8">
-          <AsesoriasPorDocenteChart data={datosDocentes} />
+          <AsesoriasChart />
+          {/* <AsesoriasPorDocenteChart data={datosDocentes} /> */}
         </div>
       </main>
     </div>
