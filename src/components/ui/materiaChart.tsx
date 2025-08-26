@@ -95,8 +95,17 @@ export function AsesoriasPorDocenteChart({ data }: Props) {
         : payload.value;
 
     return (
-      <g transform={`translate(${x}, ${y + 10})`}>
-        <text x={0} y={0} textAnchor="middle" fontSize={12} fill="#000">
+      <g transform={`translate(${x}, ${y})`}>
+        <text
+          x={0}
+          y={0}
+          dx={6} // mueve horizontalmente para centrar
+          dy={8} // separación desde el eje
+          textAnchor="start" // alinea el inicio del texto
+          fontSize={12}
+          fill="#000"
+          transform="rotate(90)"
+        >
           {shortLabel}
         </text>
       </g>
@@ -120,7 +129,7 @@ export function AsesoriasPorDocenteChart({ data }: Props) {
             <XAxis
               dataKey="nombre"
               interval={0}
-              height={60}
+              height={100}
               tick={renderCustomTick}
               tickLine={false}
               axisLine={false}
