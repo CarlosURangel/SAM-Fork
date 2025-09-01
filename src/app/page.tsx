@@ -6,7 +6,7 @@ export default function Home() {
 //Pagina provicional para probar el funcionamiento de la API con la base de datos 
 
   const [users, setUsers] = useState<any[]>([])
-  const [form, setForm] = useState({ nombre: "", correo: "", expediente: "" })
+  const [form, setForm] = useState({ nombre: "", expediente: "" })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -19,10 +19,27 @@ export default function Home() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   setLoading(true)
+  //   const res = await fetch("http://localhost:3000/api/users", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(form),
+  //   })
+  //   if (res.ok) {
+  //     const newUser = await res.json()
+  //     setUsers(prev => [...prev, newUser])
+  //     setForm({ nombre: "", correo: "", expediente: "" })
+  //   }
+  //   setLoading(false)
+  // }
+  console.log(process.env.JWT_SECRET);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const res = await fetch("http://localhost:3000/api/users", {
+    const res = await fetch("http://localhost:3000/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
@@ -30,7 +47,8 @@ export default function Home() {
     if (res.ok) {
       const newUser = await res.json()
       setUsers(prev => [...prev, newUser])
-      setForm({ nombre: "", correo: "", expediente: "" })
+      setForm({nombre: "", expediente: "" })
+      alert("Usuario logueado")
     }
     setLoading(false)
   }
@@ -60,12 +78,12 @@ export default function Home() {
 
       {/* Formulario para crear usuario */}
       <div className="flex-1 flex flex-col justify-center items-center border-l border-gray-200 pl-8">
-        <h2 className="text-xl font-bold mb-4">Crear usuario</h2>
+        <h2 className="text-xl font-bold mb-4">Inicia sesion</h2>
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 w-full max-w-[350px]"
         >
-          <input
+          {/* <input
             name="nombre"
             type="text"
             placeholder="Nombre"
@@ -73,13 +91,13 @@ export default function Home() {
             value={form.nombre}
             onChange={handleChange}
             className="p-2 rounded border border-gray-300"
-          />
+          /> */}
           <input
-            name="correo"
-            type="email"
-            placeholder="Correo"
+            name="nombre"
+            type="text"
+            placeholder="nombre"
             required
-            value={form.correo}
+            value={form.nombre}
             onChange={handleChange}
             className="p-2 rounded border border-gray-300"
           />
@@ -93,7 +111,7 @@ export default function Home() {
             className="p-2 rounded border border-gray-300"
           />
           <Button type="submit" disabled={loading}>
-            {loading ? "Creando..." : "Crear usuario"}
+            {loading ? "Creando..." : "Inicia Sesión"}
           </Button>
         </form>
       </div>
