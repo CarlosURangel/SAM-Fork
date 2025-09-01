@@ -1,10 +1,11 @@
 import React from 'react'
 
-import { Home, Clock, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { SidebarAdminListProps, SidebarAdminProps } from '@/types/sidebar';
 
-export const SidebarAdmin = () => {
+export const SidebarAdmin = ({ routes, pathname }: SidebarAdminListProps) => {
   return (
     <aside className="sticky top-0 left-0 h-screen w-64 bg-[#10175B] text-white flex flex-col justify-between z-50 flex-none">
       <div>
@@ -14,21 +15,16 @@ export const SidebarAdmin = () => {
         </div>
 
         <nav className="px-4 space-y-2">
-          <Link
-            href="/registro"
-            className="flex items-center gap-3 px-4 py-2 bg-white/10 rounded text-white hover:bg-white/20 transition"
-          >
-            <Home size={18} />
-            <span>Registro de asesoría</span>
-          </Link>
-
-          <Link
-            href="/historial"
-            className="flex items-center gap-3 px-4 py-2 rounded hover:bg-white/10 transition"
-          >
-            <Clock size={18} />
-            <span>Historial</span>
-          </Link>
+          {
+            routes.map((route: SidebarAdminProps) => (
+              <Link key={route.name} href={route.route} className={`w-full 
+              flex items-center gap-3 px-4 py-2 rounded hover:bg-white/10 transition 
+              ${pathname.includes(route.route) ? 'bg-white/10' : ''}`}>
+                <route.icon size={18} />
+                <span>{route.name}</span>
+              </Link>
+            ))
+          }
         </nav>
       </div>
 

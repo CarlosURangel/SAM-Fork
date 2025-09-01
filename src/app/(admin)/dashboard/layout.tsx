@@ -1,4 +1,7 @@
+"use client"
 import { SidebarAdmin } from "@/components/layout/SidebarAdmin"
+import { routes } from "@/const/SidebarAdmin"
+import { usePathname } from "next/navigation";
 
 
 export default function DashboardLayout({
@@ -6,9 +9,10 @@ export default function DashboardLayout({
 }: {
     children: React.ReactNode
 }) {
+    const pathname = usePathname();     
     return (
         <main className="flex">
-            <SidebarAdmin />
+            <SidebarAdmin routes={routes} pathname={pathname}/>
             {children}
         </main>
     )
