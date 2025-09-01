@@ -9,8 +9,16 @@ export type UserManagement = {
     total: number
 }
 
-export type TableBaseProps = {
-    data: UserManagement[]
-    columns: ColumnDef<UserManagement>[]
-    searchBy?: string
+export type HistoryAdmin = {
+    date: string
+    nameTeacher: string
+    students: string
+    semester: string
+    subject: string
 }
+
+export type TableBaseProps<TData> = {
+  data: TData[];
+  columns: ColumnDef<TData, any>[];
+  searchBy?: keyof TData; 
+};
