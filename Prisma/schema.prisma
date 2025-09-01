@@ -7,34 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id         String  @id @default(uuid())
-  nombre     String
-  correo     String  @unique
-  expediente String  @unique
+
+model Admin {
+  idAdmin  String @id @default(uuid())
+  name     String
+  rol      String @default("admin")
+  email    String @unique
+  password String
 }
 
-model Asesoria {
-  id                BigInt     @id @default(autoincrement())
-  nombre_alumno     String     @db.VarChar(100)
-  nombre_profesor   String     @db.VarChar(100)
-  carrera           String     @db.VarChar(100)
-  expediente_alumno String     @db.VarChar(10)
-  id_materia        Int
-  tema              String?    @db.Text
-  fecha             DateTime
 
-  materia           Materia    @relation(fields: [id_materia], references: [id])
+model Student {
+  idStudent  String       @default(uuid())
+  rol        String       @default("student")
+  expedient  String       @id @unique
+  fullName   String
+  career     String
+  semester   String
+  advisories Advisories[]
 }
 
-model Materia {
-  id         Int         @id @default(autoincrement())
-  nombre     String      @db.VarChar(100)
-  asesorias  Asesoria[]
-}
+model Advisories {
+  idAdvisory    String    @id @default(uuid())
+  expStudent    String
+  studentName   String?
+  cveMaestro    String
+  teacherName   String?
+  title         String?
+  advisoryDate  DateTime?
+  status        String    @default("Pending") 
+  creation_date DateTime  @default(now())
 
-model Administrador {
-  id             Int     @id @default(autoincrement())
-  nombre_usuario String  @db.VarChar(50)
-  password       String  @db.VarChar(60)
+
+  // Relaciones
+  student Student @relation(fields: [expStudent], references: [expedient])
+  
 }
