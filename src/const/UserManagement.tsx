@@ -56,7 +56,7 @@ export const columnsUserManagement: ColumnDef<UserManagement>[] = [
         header: "Alumnos asignados",
         cell: ({ row }) => (
             <Link
-                href={``}
+                href={`/dashboard/gestion-de-usuarios/alumnos-asignados`}
                 className="text-blue-600 underline"
             >
                 Ver

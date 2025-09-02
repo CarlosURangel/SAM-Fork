@@ -17,6 +17,13 @@ export type HistoryAdmin = {
     subject: string
 }
 
+export type StudentAssigned = {
+    exp: string
+    nameStudent: string
+    career: string
+    semester: string
+}
+
 export type TableBaseProps<TData> = {
   data: TData[];
   columns: ColumnDef<TData, any>[];
