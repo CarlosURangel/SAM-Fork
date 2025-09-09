@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AsesoriasPorDocenteChart } from "@/components/ui/materiaChart";
 // import { AsesoriasPorDocenteChart } from "@/components/ui/docenteChart";
 import Sidebar from "@/components/ui/sidebar";
-import Chart from "@/components/chart-bar-mixed";
+import Chart from "@/components/chars/ChartTutoringPerSubject";
 import { AsesoriasChart } from "@/components/Asesorias-chart";
 
 //datos de ejemplo
