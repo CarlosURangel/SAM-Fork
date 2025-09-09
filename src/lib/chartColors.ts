@@ -2,7 +2,7 @@
 
 import { ChartConfig } from "@/components/ui/chart";
 
-// 1️⃣ Función para generar una paleta de colores azules
+// 1️⃣ Función para generar una paleta de colores azules más distintos
 export function generateBluePalette(
     startColor: string = "#93C5FD",
     endColor: string = "#1D4ED8",
@@ -20,9 +20,12 @@ export function generateBluePalette(
     const palette: string[] = [];
 
     for (let i = 0; i < steps; i++) {
-        const r = Math.round(startRgb[0] + ((endRgb[0] - startRgb[0]) / (steps - 1)) * i);
-        const g = Math.round(startRgb[1] + ((endRgb[1] - startRgb[1]) / (steps - 1)) * i);
-        const b = Math.round(startRgb[2] + ((endRgb[2] - startRgb[2]) / (steps - 1)) * i);
+        // Interpolación no lineal para separar más los colores
+        const factor = Math.sin((i / (steps - 1)) * (Math.PI / 2)); // función seno suaviza y separa
+        const r = Math.round(startRgb[0] + (endRgb[0] - startRgb[0]) * factor);
+        const g = Math.round(startRgb[1] + (endRgb[1] - startRgb[1]) * factor);
+        const b = Math.round(startRgb[2] + (endRgb[2] - startRgb[2]) * factor);
+
         palette.push(rgbToHex(r, g, b));
     }
 
@@ -35,7 +38,7 @@ export function unifyBlueColorsById<T extends { id?: string; fill?: string }, C 
     config: C,
     palette: string[]
 ): { newData: T[]; newConfig: C } {
-    const newConfig = { ...config } as Record<string, any>; // <-- aquí decimos que es indexable
+    const newConfig = { ...config } as Record<string, any>;
     const newData = data.map((item) => ({ ...item }));
 
     newData.forEach((item, index) => {
@@ -50,6 +53,5 @@ export function unifyBlueColorsById<T extends { id?: string; fill?: string }, C 
         }
     });
 
-    return { newData, newConfig: newConfig as C }; // <-- cast de vuelta a C
+    return { newData, newConfig: newConfig as C };
 }
-
