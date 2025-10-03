@@ -7,39 +7,70 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Teachers {
+  idMaestro       String   @id
+  rol             String   @default("teacher")
+  nombre          String?
+  apellidoPaterno String?
+  apellidoMaterno String?
+  nombreMaestro   String
+  cveMaestro      String?  @unique
+  students        Students[]
+  advisories      Advisories[]
+}
+
+model Students {
+  idStudent  String   @unique @default(uuid())
+  rol        String   @default("student")
+  expedient  String   @id
+  fullName   String
+  semester   String
+  cveMaestro String?
+  idCareer   String
+  advisories Advisories[]
+  career     Careers   @relation(fields: [idCareer], references: [idCareer])
+  teacher    Teachers? @relation(fields: [cveMaestro], references: [cveMaestro])
+}
+
+model Advisories {
+  idAdvisory    String   @id @default(uuid())
+  expStudent    String
+  cveMaestro    String
+  idSubject     String
+  validatedBy   String?
+  advisoryDate  DateTime?
+  status        String   @default("Pending")
+  creation_date DateTime @default(now())
+  topic         String?
+  student       Students @relation(fields: [expStudent], references: [expedient])
+  teacher       Teachers @relation(fields: [cveMaestro], references: [cveMaestro])
+  subject       Subjects @relation(fields: [idSubject], references: [idSubject])
+  validator     Admin?   @relation("AdminToAdvisories", fields: [validatedBy], references: [idAdmin])
+}
 
 model Admin {
   idAdmin  String @id @default(uuid())
   name     String
   rol      String @default("admin")
-  email    String @unique
   password String
+  validatedAdvisories Advisories[] @relation("AdminToAdvisories")
 }
 
-
-model Student {
-  idStudent  String       @default(uuid())
-  rol        String       @default("student")
-  expedient  String       @id @unique
-  fullName   String
-  career     String
-  semester   String
-  advisories Advisories[]
+model Careers {
+  idCareer   String    @id @default(uuid())
+  code       String    @unique
+  name       String
+  shortName  String?
+  students   Students[]
+  subjects   Subjects[]
 }
 
-model Advisories {
-  idAdvisory    String    @id @default(uuid())
-  expStudent    String
-  studentName   String?
-  cveMaestro    String
-  teacherName   String?
-  title         String?
-  advisoryDate  DateTime?
-  status        String    @default("Pending") 
-  creation_date DateTime  @default(now())
-
-
-  // Relaciones
-  student Student @relation(fields: [expStudent], references: [expedient])
-  
+model Subjects {
+  idSubject   String   @id @default(uuid())
+  code        String
+  name        String
+  semester    Int?
+  idCareer    String
+  career      Careers  @relation(fields: [idCareer], references: [idCareer])
+  advisories  Advisories[]
 }

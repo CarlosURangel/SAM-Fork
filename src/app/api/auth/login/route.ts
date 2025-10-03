@@ -4,47 +4,43 @@ import { prisma } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
-    const { nombre, expediente } = await req.json();
+    const { nombreMaestro, cveMaestro } = await req.json();
 
-    // Llama a la API externa falta implementar API
-    // const externalRes = await fetch("ruta a la api", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ nombre, expediente }),
-    // });
-
-    // Verifica las credenciales en la base de datos con los usuarios de prueba
-    const user = await prisma.user.findUnique({
-      where: { nombre, expediente },
+    const user = await prisma.teachers.findUnique({
+      where: { cveMaestro },
     });
-    if (!user) {
+
+    if (!user || user.nombreMaestro !== nombreMaestro) {
       return NextResponse.json(
-        { message: "Credenciales invalidas" },
+        { message: "Credenciales inválidas" },
         { status: 401 }
       );
     }
 
     const payload = {
-      nombre: user.nombre,
-      expediente: user.expediente,
+      id: user.idMaestro,
+      nombreMaestro: user.nombreMaestro,
+      cveMaestro: user.cveMaestro,
     };
 
     const token = sign(payload, process.env.JWT_SECRET!, {
       expiresIn: "8h",
     });
+
     if (!token) {
       return NextResponse.json(
         { message: "Error al generar token" },
         { status: 500 }
       );
     }
+
     return NextResponse.json(
-      { message: "Inicio de sesion exitoso", user, token },
+      { message: "Inicio de sesión exitoso", user, token },
       { status: 200 }
     );
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message || "Error al iniciar sesion" },
+      { error: error.message || "Error al iniciar sesión" },
       { status: 500 }
     );
   }
