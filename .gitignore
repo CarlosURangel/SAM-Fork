@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# json data 
+carreras.json
+
+#Entorno de pruebas
+docker-compose.yml
+pgdata/
