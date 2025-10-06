@@ -4,39 +4,50 @@ import { prisma } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
-    const { nombreMaestro, cveMaestro } = await req.json();
+    const { nombre, cve } = await req.json();
 
-    const user = await prisma.teachers.findUnique({
-      where: { cveMaestro },
+    const teacher = await prisma.teachers.findUnique({
+      where: { cveMaestro: cve },
     });
 
-    if (!user || user.nombreMaestro !== nombreMaestro) {
+    if (teacher && teacher.nombreMaestro === nombre) {
+      const payload = {
+        id: teacher.idMaestro,
+        nombreMaestro: teacher.nombreMaestro,
+        cveMaestro: teacher.cveMaestro,
+        rol: "teacher",
+      };
+      const token = sign(payload, process.env.JWT_SECRET!, {
+        expiresIn: "8h",
+      });
       return NextResponse.json(
-        { message: "Credenciales inválidas" },
-        { status: 401 }
+        { message: "Inicio de sesión exitoso", user: teacher, token },
+        { status: 200 }
       );
     }
 
-    const payload = {
-      id: user.idMaestro,
-      nombreMaestro: user.nombreMaestro,
-      cveMaestro: user.cveMaestro,
-    };
-
-    const token = sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "8h",
+    const admin = await prisma.admin.findUnique({
+      where: { cveAdmin: cve },
     });
 
-    if (!token) {
+    if (admin && admin.name === nombre) {
+      const payload = {
+        id: admin.idAdmin,
+        name: admin.name,
+        rol: "admin",
+      };
+      const token = sign(payload, process.env.JWT_SECRET!, {
+        expiresIn: "8h",
+      });
       return NextResponse.json(
-        { message: "Error al generar token" },
-        { status: 500 }
+        { message: "Inicio de sesión exitoso", user: admin, token },
+        { status: 200 }
       );
     }
 
     return NextResponse.json(
-      { message: "Inicio de sesión exitoso", user, token },
-      { status: 200 }
+      { message: "Credenciales inválidas" },
+      { status: 401 }
     );
   } catch (error: any) {
     return NextResponse.json(

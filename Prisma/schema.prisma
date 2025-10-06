@@ -24,7 +24,7 @@ model Students {
   rol        String   @default("student")
   expedient  String   @id
   fullName   String
-  semester   String
+  semester   Int
   cveMaestro String?
   idCareer   String
   advisories Advisories[]
@@ -50,9 +50,9 @@ model Advisories {
 
 model Admin {
   idAdmin  String @id @default(uuid())
-  name     String
+  name     String 
   rol      String @default("admin")
-  password String
+  cveAdmin String @unique
   validatedAdvisories Advisories[] @relation("AdminToAdvisories")
 }
 
