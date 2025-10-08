@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import Sidebar from "@/components/ui/sidebar";
-import Chart from "@/components/chart-bar-mixed";
+import Chart from "@/components/chars/ChartTutoringPerSubject";
 import { AsesoriasChart } from "@/components/Asesorias-chart";
 
 export default function Home() {
