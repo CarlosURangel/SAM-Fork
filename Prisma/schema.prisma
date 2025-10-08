@@ -10,10 +10,6 @@ datasource db {
 model Teachers {
   idMaestro       String   @id
   rol             String   @default("teacher")
-  nombre          String?
-  apellidoPaterno String?
-  apellidoMaterno String?
-  nombreMaestro   String
   cveMaestro      String?  @unique
   students        Students[]
   advisories      Advisories[]

@@ -1,20 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sign } from "jsonwebtoken"; 
+import { sign } from "jsonwebtoken";
 import { prisma } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
     const { nombre, cve } = await req.json();
 
-    const teacher = await prisma.teachers.findUnique({
-      where: { cveMaestro: cve },
-    });
 
-    if (teacher && teacher.nombreMaestro === nombre) {
+    const apiRes = await fetch(`${process.env.API_URL}${cve}`);
+    const apiData = await apiRes.json();
+
+    
+
+    if (apiData.response === "true" ) {
+      let teacher = await prisma.teachers.findUnique({
+        where: { cveMaestro: cve },
+      });
+
+      if (!teacher) {
+        teacher = await prisma.teachers.create({
+          data: {
+            idMaestro: apiData.profesor.idMaestro,
+            cveMaestro: apiData.profesor.cveMaestro,
+            rol: "teacher",
+          },
+        });
+      }
+
       const payload = {
         id: teacher.idMaestro,
-        nombreMaestro: teacher.nombreMaestro,
         cveMaestro: teacher.cveMaestro,
+        nombreMaestro: apiData.profesor.nombreMaestro,
         rol: "teacher",
       };
       const token = sign(payload, process.env.JWT_SECRET!, {
