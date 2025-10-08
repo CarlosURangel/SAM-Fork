@@ -1,105 +1,94 @@
 "use client";
 
+import { DataTable } from "@/components/ui/dataTable";
 import {
   columnasAlumnos,
   Alumno,
 } from "@/components/ui/columns/AlumnosColumns";
-import { DataTable } from "@/components/ui/dataTable";
+import {
+  columnasProfesores,
+  Profesor,
+} from "@/components/ui/columns/ProfesoresColumns";
+import {
+  columnasRegistros,
+  Registro,
+} from "@/components/ui/columns/RegistrosColumns";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { AsesoriasPorDocenteChart } from "@/components/ui/materiaChart";
-// import { AsesoriasPorDocenteChart } from "@/components/ui/docenteChart";
 import Sidebar from "@/components/ui/sidebar";
 import Chart from "@/components/chars/ChartTutoringPerSubject";
 import { AsesoriasChart } from "@/components/Asesorias-chart";
 
-//datos de ejemplo
-const datosMateria = [
-  { materia: "Introducción a la Programación", total: 12 },
-  { materia: "Algoritmos", total: 8 },
-  { materia: "Estructura de Datos", total: 5 },
-  { materia: "Inteligencia Artificial ", total: 5 },
-  { materia: "Servicios Cloud", total: 5 },
-  { materia: "Diseño de Interfaces", total: 5 },
-];
-
-const datosDocentes = [
-  { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
-  { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
-  { nombre: "Carlo Giovanni Cetina", total: 17 },
-  { nombre: "Cesar Estevez Serrato", total: 14 },
-  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
-  { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
-  { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
-  { nombre: "Carlo Giovanni Cetina", total: 17 },
-  { nombre: "Cesar Estevez Serrato", total: 14 },
-  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
-  { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
-  { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
-  { nombre: "Carlo Giovanni Cetina", total: 17 },
-  { nombre: "Cesar Estevez Serrato", total: 14 },
-  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
-  { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
-  { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
-  { nombre: "Carlo Giovanni Cetina", total: 17 },
-  { nombre: "Cesar Estevez Serrato", total: 14 },
-  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
-  { nombre: "Carlo Giovanni Cetina", total: 17 },
-  { nombre: "Cesar Estevez Serrato", total: 14 },
-  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
-  { nombre: "Viviana Michell Campbell Rodriguez ", total: 22 },
-  { nombre: "Andrea Elizabeth Gongora Tun", total: 19 },
-  { nombre: "Carlo Giovanni Cetina", total: 17 },
-  { nombre: "Cesar Estevez Serrato", total: 14 },
-  { nombre: "Luis Antonio Diaz Jimenez", total: 9 },
-];
-
 export default function Home() {
   //Información de ejemplo
-  const datos: Alumno[] = [
+  const alumnos: Alumno[] = [
     {
-      expediente: "315266",
-      nombre: "Mario Pérez",
-      carrera: "Ingeniería en Sistemas",
-      semestre: "5",
-    },
-    {
-      expediente: "315267",
-      nombre: "Carlos Rangel",
-      carrera: "Informática",
+      expediente: "A001",
+      nombre: "Carlos López",
+      carrera: "Contaduría",
       semestre: "6",
     },
     {
-      expediente: "315268",
-      nombre: "Lautaro Martínez",
-      carrera: "Computación",
+      expediente: "A002",
+      nombre: "María Pérez",
+      carrera: "Ingeniería",
       semestre: "4",
+    },
+  ];
+
+  const profesores: Profesor[] = [
+    { nombre: "Dr. Ramírez", asesorias: 12 },
+    { nombre: "Mtra. González", asesorias: 8 },
+  ];
+
+  const registros: Registro[] = [
+    {
+      nombre: "Carlos López",
+      fecha: "2025-08-20",
+      carrera: "Contaduría",
+      semestre: "6",
+      materia: "Matemáticas",
+    },
+    {
+      nombre: "María Pérez",
+      fecha: "2025-08-22",
+      carrera: "Ingeniería",
+      semestre: "4",
+      materia: "Física",
     },
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Sidebar fijo */}
       <Sidebar />
 
-      {/* Contenido con padding para no quedar debajo del sidebar */}
       <main className="pl-64 p-6 bg-gray-50">
         <h1 className="text-2xl font-bold mb-4">Alumnos</h1>
-        <DataTable columns={columnasAlumnos} data={datos} />
+        <div className="space-y-10 p-6">
+          <section>
+            <h2 className="text-xl font-bold mb-4">Tabla de Alumnos</h2>
+            <DataTable columns={columnasAlumnos} data={alumnos} />
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold mb-4">Tabla de Profesores</h2>
+            <DataTable columns={columnasProfesores} data={profesores} />
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold mb-4">Tabla de Registros</h2>
+            <DataTable columns={columnasRegistros} data={registros} />
+          </section>
+        </div>
         <Chart />
         <div className="mt-8 flex flex-col lg:flex-row gap-8">
           <div className="flex flex-col gap-4 w-full lg:w-5/12">
             <Button>Click me</Button>
             <Textarea />
           </div>
-
-          <div className="w-full lg:w-7/12">
-            {/* <AsesoriasPorMateriaChart data={datosMateria} /> */}
-          </div>
         </div>
         <div className="mt-8">
           <AsesoriasChart />
-          {/* <AsesoriasPorDocenteChart data={datosDocentes} /> */}
         </div>
       </main>
     </div>
