@@ -20,7 +20,6 @@ import {
   SubjectBreakdown,
 } from "@/app/data/asesorias-data";
 
-// Legend personalizado: nombre bonito + count + %, con columnas dinámicas
 function CustomLegendContent({
   payload,
   data,
@@ -33,7 +32,7 @@ function CustomLegendContent({
 
   return (
     <ul
-      className="mt-2 grid gap-y-1 gap-x-3 w-full text-xs pr-2" // pr-2 para scrollbar
+      className="mt-2 grid gap-y-1 gap-x-3 w-full text-xs pr-2"
       style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
     >
       {payload.map((item: any) => {
@@ -71,35 +70,28 @@ export const CustomTooltip = ({ active, payload }: any) => {
   const professorInfo: ProfessorData = payload[0].payload;
   const breakdownData = professorInfo.breakdown;
 
-  // ====== Cálculo de layout dinámico ======
-  // Si hay muchos items, usamos 2 columnas para reducir altura
+  // Calcular columnas del layout
   const legendCols = breakdownData.length > 8 ? 2 : 1;
 
-  // Alturas base (ajústalas a tu gusto)
-  const BASE_PIE_AREA = 180; // espacio vertical reservado para el pie (incluye márgenes del chart)
-  const ITEM_HEIGHT = 22; // alto aproximado de cada fila del legend (text-xs)
-  const EXTRA_GAP = 12; // separación entre gráfica y legend
+  const BASE_PIE_AREA = 180;
+  const ITEM_HEIGHT = 22;
+  const EXTRA_GAP = 12;
 
   // Filas del legend según columnas
   const legendRows = Math.ceil(breakdownData.length / legendCols);
 
-  // Altura "natural" que querríamos para contener todo sin scroll
   const naturalHeight = BASE_PIE_AREA + legendRows * ITEM_HEIGHT + EXTRA_GAP;
 
-  // Límites para no crecer infinito ni quedar muy chico
   const MIN_CHART_HEIGHT = 260;
   const MAX_CHART_HEIGHT = 420;
 
-  // Altura final del contenedor (responsive container)
   const chartHeight = Math.max(
     MIN_CHART_HEIGHT,
     Math.min(naturalHeight, MAX_CHART_HEIGHT)
   );
 
-  // Altura máxima disponible para el legend dentro del contenedor
   const legendMaxHeight = Math.max(60, chartHeight - BASE_PIE_AREA - EXTRA_GAP);
 
-  // Si el legend se pasa, lo hacemos scrollable
   const legendOverflowY = naturalHeight > MAX_CHART_HEIGHT ? "auto" : "visible";
 
   return (
@@ -112,16 +104,12 @@ export const CustomTooltip = ({ active, payload }: any) => {
       </CardHeader>
 
       <CardContent>
-        {/* Un SOLO hijo para ChartContainer: el PieChart */}
         <ChartContainer
           config={chartConfig}
           className="w-full"
           style={{ height: chartHeight }}
         >
-          <PieChart
-            // margen inferior pequeño; el espacio real lo reserva el contenedor dinámico
-            margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
-          >
+          <PieChart margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
@@ -134,14 +122,13 @@ export const CustomTooltip = ({ active, payload }: any) => {
               innerRadius={0}
               outerRadius={70}
               strokeWidth={4}
-              labelLine={false} // sin labels; todo va al legend
+              labelLine={false}
             >
               {breakdownData.map((entry) => (
                 <Cell key={`cell-${entry.subject}`} fill={entry.fill} />
               ))}
             </Pie>
 
-            {/* Legend nativo de Recharts con contenido custom “estilo shadcn” */}
             <Legend
               verticalAlign="bottom"
               align="center"

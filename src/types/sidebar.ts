@@ -1,12 +1,14 @@
 import { LucideIcon } from "lucide-react";
 
-export interface SidebarAdminProps{
-    route: string;
-    name: string;
-    icon: LucideIcon;
+// Antes SidebarSidebarAdminProps
+export interface SidebarItemProps {
+  route: string;
+  name: string;
+  icon: LucideIcon;
 }
 
-export interface SidebarAdminListProps{
-    routes: SidebarAdminProps[];
-    pathname: string;
+// Antes SidebarAdminListProps
+export interface SidebarProps {
+  routes: SidebarItemProps[];
+  pathname: string;
 }
