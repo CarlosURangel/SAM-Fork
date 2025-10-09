@@ -9,6 +9,7 @@ datasource db {
 
 model Teachers {
   idMaestro       String   @id
+  fullName        String
   rol             String   @default("teacher")
   cveMaestro      String?  @unique
   students        Students[]
