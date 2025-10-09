@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
           data: {
             idMaestro: apiData.profesor.idMaestro,
             cveMaestro: apiData.profesor.cveMaestro,
+            fullName: apiData.profesor.nombreMaestro,
             rol: "teacher",
           },
         });
