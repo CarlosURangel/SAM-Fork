@@ -17,7 +17,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Token inválido o sin clave de maestro' }, { status: 401 })
     }
 
-    const { id, fullName, expedient, semester, idCareer } = await req.json()
+    const { idStudent, fullName, expedient, semester, idCareer } = await req.json()
 
     if (typeof fullName !== 'string' || fullName.length < 8) {
       return NextResponse.json({ error: 'El nombre completo debe ser un string de al menos 8 caracteres.' }, { status: 400 })
@@ -37,7 +37,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const student = await prisma.students.update({
-      where: { idStudent: id },
+      where: { idStudent },
       data: {
         fullName,
         expedient,
