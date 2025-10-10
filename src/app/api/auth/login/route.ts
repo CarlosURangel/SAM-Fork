@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
     if (admin && admin.name === nombre) {
       const payload = {
         id: admin.idAdmin,
+        cveAdmin: admin.cveAdmin,
         name: admin.name,
         rol: "admin",
       };
