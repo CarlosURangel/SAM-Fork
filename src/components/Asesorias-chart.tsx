@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CustomTooltip } from "./custom-chart-tooltip";
+import { CustomTooltip } from "./Custom-chart-tooltip";
 import { asesoriasData, chartConfig } from "@/app/data/asesorias-data";
 
 export function AsesoriasChart() {
@@ -34,12 +34,10 @@ export function AsesoriasChart() {
             accessibilityLayer
             data={asesoriasData}
             margin={{ top: 20, right: 20, bottom: 80, left: 20 }}
-            barCategoryGap="30%" // separa barras y se ve más limpio
+            barCategoryGap="30%"
           >
-            {/* Grid horizontal solo */}
             <CartesianGrid vertical={false} />
 
-            {/* X Axis estilizado */}
             <XAxis
               dataKey="name"
               tickLine={false}
@@ -56,17 +54,14 @@ export function AsesoriasChart() {
               dy={50}
             />
 
-            {/* Y Axis estilizado */}
             <YAxis
               tickLine={false}
               axisLine={false}
               tick={{ fontSize: 12, fill: "var(--foreground)/80" }}
             />
 
-            {/* Tooltip personalizado */}
             <ChartTooltip cursor={false} content={<CustomTooltip />} />
 
-            {/* Barra principal */}
             <Bar
               dataKey="total"
               fill="var(--color-total)"
