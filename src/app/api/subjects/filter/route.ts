@@ -1,8 +1,8 @@
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verify } from "jsonwebtoken";
-import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const authHeader = req.headers.get("authorization");
     if (!authHeader) {
@@ -12,36 +12,30 @@ export async function GET(req: NextRequest) {
       );
     }
     const token = authHeader.replace("Bearer ", "");
-
     const payload = verify(token, process.env.JWT_SECRET!);
     const cveMaestro =
       typeof payload === "object" ? payload.cveMaestro : undefined;
+
     if (!cveMaestro) {
-      return NextResponse.json(
-        { error: "Token inválido o sin clave de maestro" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
-    const students = await prisma.students.findMany({
-      where: { cveMaestro },
-      include: {
-        career:{
-          select: {
-            name: true
-          }
-        }
-      }
+    const { idCareer, semester } = await req.json();
+    const subjects = await prisma.subjects.findMany({
+      where: {
+        idCareer,
+        semester: Number(semester),
+      },
     });
-    if (!students || students.length === 0) {
+    if (subjects.length === 0) {
       return NextResponse.json(
-        { error: "No se encontraron alumnos" },
+        { error: "No se encontraron materias" },
         { status: 404 }
       );
     }
-    return NextResponse.json(students, { status: 200 });
+    return NextResponse.json(subjects, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message || "Error al obtener los alumnos" },
+      { error: error.message || "Error al filtrar materias" },
       { status: 500 }
     );
   }

@@ -12,36 +12,19 @@ export async function GET(req: NextRequest) {
       );
     }
     const token = authHeader.replace("Bearer ", "");
-
     const payload = verify(token, process.env.JWT_SECRET!);
     const cveMaestro =
       typeof payload === "object" ? payload.cveMaestro : undefined;
-    if (!cveMaestro) {
-      return NextResponse.json(
-        { error: "Token inválido o sin clave de maestro" },
-        { status: 401 }
-      );
+    const cveAdmin = typeof payload === "object" ? payload.cveAdmin : undefined;
+
+    if (!cveMaestro && !cveAdmin) {
+      return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
-    const students = await prisma.students.findMany({
-      where: { cveMaestro },
-      include: {
-        career:{
-          select: {
-            name: true
-          }
-        }
-      }
-    });
-    if (!students || students.length === 0) {
-      return NextResponse.json(
-        { error: "No se encontraron alumnos" },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json(students, { status: 200 });
+    const careers = await prisma.careers.findMany();
+    return NextResponse.json(careers, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message || "Error al obtener los alumnos" },
+      { error: error.message || "Error al obtener las carreras" },
       { status: 500 }
     );
   }
