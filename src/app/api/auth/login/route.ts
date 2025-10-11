@@ -36,13 +36,16 @@ export async function POST(req: NextRequest) {
       });
 
       const response = NextResponse.json(
-        { message: "Inicio de sesión exitoso"},
+        {
+          message: "Inicio de sesión exitoso",
+          rol: "teacher", //Devuelve el Rol del usuario para después abrir el dashboard correspondiente
+        },
         { status: 200 }
       );
       response.cookies.set("Auth_SAM", token, {
         httpOnly: true,
         path: "/",
-        maxAge: 60 * 60 * 8, 
+        maxAge: 60 * 60 * 8,
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
       });
@@ -65,13 +68,16 @@ export async function POST(req: NextRequest) {
       });
 
       const response = NextResponse.json(
-        { message: "Inicio de sesión exitoso", },
+        {
+          message: "Inicio de sesión exitoso",
+          rol: "admin", //Añadí el Rol del usuario para después abrir el dashboard correspondiente
+        },
         { status: 200 }
       );
       response.cookies.set("Auth_SAM", token, {
         httpOnly: true,
         path: "/",
-        maxAge: 60 * 60 * 8, 
+        maxAge: 60 * 60 * 8,
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
       });
