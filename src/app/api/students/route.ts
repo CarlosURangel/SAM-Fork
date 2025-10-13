@@ -4,17 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    const cookie = req.cookies.get("Auth_SAM");
-    const authToken = cookie?.value;
-
-    if (!authToken) {
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader) {
       return NextResponse.json(
         { error: "Token no proporcionado" },
         { status: 401 }
       );
     }
+    const token = authHeader.replace("Bearer ", "");
 
-    const payload = verify(authToken, process.env.JWT_SECRET!);
+    const payload = verify(token, process.env.JWT_SECRET!);
     const cveMaestro =
       typeof payload === "object" ? payload.cveMaestro : undefined;
     if (!cveMaestro) {
@@ -25,13 +24,6 @@ export async function GET(req: NextRequest) {
     }
     const students = await prisma.students.findMany({
       where: { cveMaestro },
-      include: {
-        career: {
-          select: {
-            name: true,
-          },
-        },
-      },
     });
     if (!students || students.length === 0) {
       return NextResponse.json(
