@@ -4,17 +4,22 @@ import { verify } from 'jsonwebtoken'
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get('authorization')
-    if (!authHeader) {
-      return NextResponse.json({ error: 'Token no proporcionado' }, { status: 401 })
+    const cookie = req.cookies.get("Auth_SAM");
+    const authToken = cookie?.value;
+
+    if (!authToken) {
+      return NextResponse.json(
+        { error: "Token no proporcionado" },
+        { status: 401 }
+      );
     }
-    const token = authHeader.replace('Bearer ', '')
+    const payload = verify(authToken, process.env.JWT_SECRET!);
+    const cveMaestro =
+      typeof payload === "object" ? payload.cveMaestro : undefined;
+    const cveAdmin = typeof payload === "object" ? payload.cveAdmin : undefined;
 
-    const payload = verify(token, process.env.JWT_SECRET!)
-    const cveMaestro = typeof payload === 'object' ? payload.cveMaestro : undefined
-
-    if (!cveMaestro) {
-      return NextResponse.json({ error: 'Token inválido o sin clave de maestro' }, { status: 401 })
+    if (!cveMaestro && !cveAdmin) {
+      return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
 
     const { fullName, expedient, semester, idCareer } = await req.json()
