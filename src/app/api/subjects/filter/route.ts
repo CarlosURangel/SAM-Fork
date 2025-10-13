@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verify } from "jsonwebtoken";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest) {
   try {
     const cookie = req.cookies.get("Auth_SAM");
     const authToken = cookie?.value;
@@ -23,22 +20,23 @@ export async function GET(
     if (!cveMaestro) {
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
-
-    const student = await prisma.students.findUnique({
-      where: { idStudent: params.id },
+    const { idCareer, semester } = await req.json();
+    const subjects = await prisma.subjects.findMany({
+      where: {
+        idCareer,
+        semester: Number(semester),
+      },
     });
-
-    if (!student || student.cveMaestro !== cveMaestro) {
+    if (subjects.length === 0) {
       return NextResponse.json(
-        { error: "Alumno no encontrado" },
+        { error: "No se encontraron materias" },
         { status: 404 }
       );
     }
-
-    return NextResponse.json(student);
+    return NextResponse.json(subjects, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message || "Error al obtener estudiante" },
+      { error: error.message || "Error al filtrar materias" },
       { status: 500 }
     );
   }

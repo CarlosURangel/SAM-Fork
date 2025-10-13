@@ -1,11 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verify } from "jsonwebtoken";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
     const cookie = req.cookies.get("Auth_SAM");
     const authToken = cookie?.value;
@@ -19,26 +16,16 @@ export async function GET(
     const payload = verify(authToken, process.env.JWT_SECRET!);
     const cveMaestro =
       typeof payload === "object" ? payload.cveMaestro : undefined;
+    const cveAdmin = typeof payload === "object" ? payload.cveAdmin : undefined;
 
-    if (!cveMaestro) {
+    if (!cveMaestro && !cveAdmin) {
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
-
-    const student = await prisma.students.findUnique({
-      where: { idStudent: params.id },
-    });
-
-    if (!student || student.cveMaestro !== cveMaestro) {
-      return NextResponse.json(
-        { error: "Alumno no encontrado" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(student);
+    const careers = await prisma.careers.findMany();
+    return NextResponse.json(careers, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message || "Error al obtener estudiante" },
+      { error: error.message || "Error al obtener las carreras" },
       { status: 500 }
     );
   }
