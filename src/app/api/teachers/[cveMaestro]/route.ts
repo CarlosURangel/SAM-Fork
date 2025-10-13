@@ -21,7 +21,7 @@ export async function GET(
 
     if (!authToken) {
       return NextResponse.json(
-        { error: "Token no proporcionado" },
+        { error: "Token no proporcionado " },
         { status: 401 }
       );
     }
