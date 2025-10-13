@@ -4,14 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
+    const cookie = req.cookies.get("Auth_SAM");
+    const authToken = cookie?.value;
+
+    if (!authToken) {
       return NextResponse.json(
         { error: "Token no proporcionado" },
         { status: 401 }
       );
     }
-    const authToken = authHeader.replace("Bearer ", "");
+
     const payload = verify(authToken, process.env.JWT_SECRET!);
     const cveMaestro =
       typeof payload === "object" ? payload.cveMaestro : undefined;

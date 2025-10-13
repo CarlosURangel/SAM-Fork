@@ -5,6 +5,7 @@ export type UserManagement = {
   students: string;
   statistics: string;
   total: number;
+  cveTeacher: string;
 };
 
 export type HistoryAdmin = {
