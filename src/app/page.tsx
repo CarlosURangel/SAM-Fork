@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import Sidebar from "@/components/ui/sidebar";
-import Chart from "@/components/chars/ChartTutoringPerSubject";
+// import Chart from "@/components/chars/ChartTutoringPerSubject";
 import { AsesoriasChart } from "@/components/Asesorias-chart";
 
 export default function Home() {
@@ -80,7 +80,7 @@ export default function Home() {
             <DataTable columns={columnasRegistros} data={registros} />
           </section>
         </div>
-        <Chart />
+        {/* <Chart /> */}
         <div className="mt-8 flex flex-col lg:flex-row gap-8">
           <div className="flex flex-col gap-4 w-full lg:w-5/12">
             <Button>Click me</Button>
