@@ -37,7 +37,7 @@ const page = () => {
             }
         };
 
-        fetchTeachers(); // Llamamos a la función asíncrona
+        fetchTeachers();
     }, []);
     return (
         <section className='mx-16 mt-28 flex-1'>
