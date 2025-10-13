@@ -4,14 +4,15 @@ import { prisma } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
+    const cookie = req.cookies.get("Auth_SAM");
+    const authToken = cookie?.value;
+
+    if (!authToken) {
       return NextResponse.json(
         { error: "Token no proporcionado" },
         { status: 401 }
       );
     }
-    const authToken = authHeader.replace("Bearer ", "");
     const payload = verify(authToken, process.env.JWT_SECRET!);
     const cveAdmin = typeof payload === "object" ? payload.cveAdmin : undefined;
     if (!cveAdmin) {
@@ -28,18 +29,18 @@ export async function GET(req: NextRequest) {
       );
     }
     const teachersWithAdvisories = await Promise.all(
-  teachers
-    .filter((teacher) => teacher.cveMaestro !== null)
-    .map(async (teacher) => {
-      const totalAdvisories = await prisma.advisories.count({
-        where: { cveMaestro: teacher.cveMaestro as string },
-      });
-      return {
-        ...teacher,
-        TotalAdvisories: totalAdvisories,
-      };
-    })
-);
+      teachers
+        .filter((teacher) => teacher.cveMaestro !== null)
+        .map(async (teacher) => {
+          const totalAdvisories = await prisma.advisories.count({
+            where: { cveMaestro: teacher.cveMaestro as string },
+          });
+          return {
+            ...teacher,
+            TotalAdvisories: totalAdvisories,
+          };
+        })
+    );
     return NextResponse.json(teachersWithAdvisories, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(

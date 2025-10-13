@@ -4,15 +4,16 @@ import { verify } from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
+    const cookie = req.cookies.get("Auth_SAM");
+    const authToken = cookie?.value;
+
+    if (!authToken) {
       return NextResponse.json(
         { error: "Token no proporcionado" },
         { status: 401 }
       );
     }
-    const token = authHeader.replace("Bearer ", "");
-    const payload = verify(token, process.env.JWT_SECRET!);
+    const payload = verify(authToken, process.env.JWT_SECRET!);
     const cveMaestro =
       typeof payload === "object" ? payload.cveMaestro : undefined;
     const cveAdmin = typeof payload === "object" ? payload.cveAdmin : undefined;
