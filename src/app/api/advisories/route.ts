@@ -21,9 +21,28 @@ export async function GET(req: NextRequest) {
         { status: 401 }
       );
     }
-    const advisories = await prisma.advisories.findMany();
+    const advisories = await prisma.advisories.findMany({
+      include: {
+        teacher: {
+          select: {
+            fullName: true,
+          },
+        },
+        student: {
+          select: {
+            fullName: true,
+            semester: true,
+          },
+        },
+        subject: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
     if (!advisories || advisories.length === 0) {
-        return NextResponse.json({ error: "No se encontraron asesorías" }, { status: 404 });
+      return NextResponse.json({ error: "No se encontraron asesorías" }, { status: 404 });
     }
     return NextResponse.json(advisories, { status: 200 });
   } catch (error: any) {

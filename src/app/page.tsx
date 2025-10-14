@@ -59,17 +59,17 @@ export default function Home() {
   ];
 
   const onClick = async () => {
-    const response = await fetch('/api/students/register', {
+    const response = await fetch('/api/advisories/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       credentials: 'include', // <-- Esto envía la cookie automáticamente
       body: JSON.stringify({
-        fullName: "Lizbeth Morales",
-        expedient: "201984",
-        semester: 8,
-        idCareer: "6199c898-bdc1-472f-ac2a-befbbbdb14da"
+        expStudent: "201984",
+        idSubject: "4b635907-92d2-4e9f-a40d-caf74509025b",
+        advisoryDate: "2025-10-14",
+        topic: "Dudas de una clase"
       })
     });
     console.log(await response.json());
