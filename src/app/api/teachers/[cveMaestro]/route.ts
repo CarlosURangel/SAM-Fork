@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { cveMaestro: string } }
 ) {
   try {
-    const { cveMaestro } = params;
+    const { cveMaestro } = await params;
 
     if (!cveMaestro) {
       return NextResponse.json(
