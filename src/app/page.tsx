@@ -58,6 +58,23 @@ export default function Home() {
     },
   ];
 
+  const onClick = async () => {
+    const response = await fetch('/api/students/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include', // <-- Esto envía la cookie automáticamente
+      body: JSON.stringify({
+        fullName: "Lizbeth Morales",
+        expedient: "201984",
+        semester: 8,
+        idCareer: "6199c898-bdc1-472f-ac2a-befbbbdb14da"
+      })
+    });
+    console.log(await response.json());
+  }
+
   return (
     <div className="min-h-screen">
       <Sidebar />
@@ -83,7 +100,7 @@ export default function Home() {
         {/* <Chart /> */}
         <div className="mt-8 flex flex-col lg:flex-row gap-8">
           <div className="flex flex-col gap-4 w-full lg:w-5/12">
-            <Button>Click me</Button>
+            <Button onClick={onClick}>Click me</Button>
             <Textarea />
           </div>
         </div>

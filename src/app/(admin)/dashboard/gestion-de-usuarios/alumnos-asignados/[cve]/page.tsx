@@ -30,9 +30,9 @@ const page = () => {
                 });
                 const data:studentsApi = await response.json();
                 const newData: StudentAssigned[] = data.students.map((student) => ({
-                    exp: student.expediente,
+                    exp: student.expedient,
                     nameStudent: student.fullName,
-                    career: student.career,
+                    career: student.career.name,
                     semester: student.semester,
                 }));
                 setDataStudentAssigned(newData)

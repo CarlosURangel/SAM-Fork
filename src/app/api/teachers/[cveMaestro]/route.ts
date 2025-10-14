@@ -37,7 +37,15 @@ export async function GET(
     const maestro = await prisma.teachers.findUnique({
       where: { cveMaestro },
       include: {
-        students: true,
+        students: {
+          select: {
+            idStudent: true,
+            fullName: true,
+            expedient: true,
+            career: { select: { name: true } },
+            semester: true,
+          }
+        },
       },
     });
 

@@ -15,10 +15,10 @@ export type studentsApi = {
     students: {
         idStudent: string,
         rol:string,
-        expediente: string,
+        expedient: string,
         fullName: string,
         semester: string,
         cveMaestro?: string,
-        career: string,
+        career: {name:string},
     }[]
 }

@@ -50,7 +50,7 @@ export const columnsStudentAssigned: ColumnDef<StudentAssigned>[] = [
         accessorKey: "exp",
         header: "Expediente",
         cell: ({ row }) => (
-            <div className="capitalize" > {row.getValue("exp")} </div>
+            <div className="capitalize flex" > {row.getValue("exp")} </div>
         ),
     },
     {
