@@ -1,109 +1,63 @@
-import { StudentAssigned } from "@/types/table";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-export const dataStudentAssignedTable: StudentAssigned[] = [
-  {
-    exp: "243596",
-    nameStudent: "Juan Pérez",
-    career: "Ingeniería en Sistemas",
-    semester: "5",
-  },
-  {
-    exp: "243597",
-    nameStudent: "María López",
-    career: "Ing. de Software",
-    semester: "7",
-  },
-  {
-    exp: "243598",
-    nameStudent: "Carlos Sánchez",
-    career: "Lic. en Informática",
-    semester: "3",
-  },
-  {
-    exp: "243599",
-    nameStudent: "Ana Gómez",
-    career: "Ing. en Sistemas",
-    semester: "1",
-  },
-  {
-    exp: "243600",
-    nameStudent: "Luis Fernández",
-    career: "Ing. de Software",
-    semester: "9",
-  },
-  {
-    exp: "243601",
-    nameStudent: "Sofía Ramírez",
-    career: "Lic. en Informática",
-    semester: "4",
-  },
-];
+// El tipo completo del objeto que recibimos de la API
+export type FullStudentData = {
+  idStudent: string;
+  expedient: string;
+  fullName: string;
+  semester: number;
+  idCareer: string;
+  career: { name: string };
+};
 
-export const columnsStudentAssignedTable: ColumnDef<StudentAssigned>[] = [
+// Convertimos las columnas en una función que recibe los manejadores de eventos
+export const createStudentColumns = (
+  onEdit: (student: FullStudentData) => void,
+  // onViewHistory: (student: FullStudentData) => void,
+  // onRegister: (student: FullStudentData) => void
+): ColumnDef<FullStudentData>[] => [
   {
-    accessorKey: "exp",
+    accessorKey: "expedient",
     header: "Expediente",
-    cell: ({ row }) => (
-      <div className="capitalize"> {row.getValue("exp")} </div>
+  },
+  {
+    accessorKey: "fullName",
+    header: ({ column }) => (
+      <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} className="p-0 m-0 flex items-center gap-2">
+        Nombre del alumno
+        <ArrowUpDown size={15} />
+      </button>
     ),
   },
   {
-    accessorKey: "nameStudent",
-    header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 m-0 flex items-center gap-2"
-        >
-          Nombre del alumno
-          <ArrowUpDown size={15} />
-        </button>
-      );
-    },
-    cell: ({ row }) => <div> {row.getValue("nameStudent")} </div>,
-  },
-  {
-    accessorKey: "career",
+    accessorKey: "career.name", // Accedemos al nombre anidado
     header: "Carrera",
-    cell: ({ row }) => (
-      <div className="capitalize"> {row.getValue("career")} </div>
-    ),
   },
   {
     accessorKey: "semester",
     header: "Semestre",
-    cell: ({ row }) => (
-      <div className="capitalize"> {row.getValue("semester")} </div>
-    ),
   },
   {
-    accessorKey: "edit",
+    id: 'actions',
     header: "",
-    cell: ({ row }) => (
-      <Link href={``} className="text-blue-600 underline">
-        Editar
-      </Link>
-    ),
-  },
-  {
-    accessorKey: "seeHistory",
-    header: "",
-    cell: ({ row }) => (
-      <Link href={``} className="text-blue-600 underline">
-        Ver Historial
-      </Link>
-    ),
-  },
-  {
-    accessorKey: "register",
-    header: "",
-    cell: ({ row }) => (
-      <Link href={``} className="text-blue-600 underline">
-        Registrar
-      </Link>
-    ),
+    cell: ({ row }) => {
+      const student = row.original; // Aquí tenemos todos los datos de la fila
+
+      return (
+        <div className="flex gap-2 justify-end">
+          <Button variant="outline" size="sm" onClick={() => onEdit(student)}>
+            Editar
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => alert(`Ver historial de ${student.fullName}`)}>
+            Ver Historial
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => alert(`Registrar asesoría para ${student.fullName}`)}>
+            Registrar
+          </Button>
+        </div>
+      );
+    },
   },
 ];

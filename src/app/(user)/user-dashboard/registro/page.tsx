@@ -1,83 +1,79 @@
 "use client";
-import React, { useEffect, useState, useCallback } from "react";
-import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { StudentDialog } from "@/components/forms/AddStudentDialog"; // Puede que necesites renombrar el import si el archivo se llama AddStudentDialog.tsx
 import { TableBase } from "@/components/tables/TableBase";
-import { StudentAssigned } from "@/types/table";
-import { columnsStudentAssigned } from "@/const/StudentAssigned";
-
-// Este tipo representa la estructura de cada objeto en el array
-// que devuelve tu API GET /api/students
-type StudentFromApi = {
-  expedient: string;
-  fullName: string;
-  semester: number;
-  career: {
-    name: string;
-  };
-};
+import { createStudentColumns, FullStudentData } from "@/const/StudentAssignedTable"; // Importamos la función y el tipo
+import { PlusIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Page = () => {
-  const [dataStudentAssigned, setDataStudentAssigned] = useState<
-    StudentAssigned[]
-  >([]);
+  // Este estado ahora guardará los datos completos de la API
+  const [allStudents, setAllStudents] = useState<FullStudentData[]>([]);
+  
+  // Estados para controlar el modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [studentToEdit, setStudentToEdit] = useState<FullStudentData | null>(null);
 
-  // Creamos la función para obtener los datos y la envolvemos en useCallback
-  // para poder pasarla de forma segura al componente del modal.
   const fetchMyStudents = useCallback(async () => {
     try {
-      // Usamos la API correcta que obtiene los alumnos del profesor logueado
-      const response = await fetch("/api/students", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // Importante para enviar la cookie de sesión
-      });
-
-      if (!response.ok) {
-        console.error("Error al obtener los alumnos:", response.statusText);
-        setDataStudentAssigned([]); // En caso de error, dejamos la tabla vacía
-        return;
-      }
-
-      const studentsFromApi: StudentFromApi[] = await response.json();
-
-      // Mapeamos los datos de la API al formato que la tabla espera
-      const formattedData: StudentAssigned[] = studentsFromApi.map(
-        (student) => ({
-          exp: student.expedient,
-          nameStudent: student.fullName,
-          career: student.career.name,
-          semester: student.semester.toString(), // Convertimos el semestre a string
-        })
-      );
-
-      setDataStudentAssigned(formattedData);
+      const response = await fetch("/api/students");
+      if (!response.ok) throw new Error('Error al cargar alumnos');
+      const data = await response.json();
+      setAllStudents(data);
     } catch (error) {
-      console.error(
-        "Ocurrió un error al procesar la solicitud de alumnos:",
-        error
-      );
-      setDataStudentAssigned([]);
+      console.error(error);
+      setAllStudents([]);
     }
-  }, []); // El array vacío asegura que la función no se recree innecesariamente
+  }, []);
 
-  // Este useEffect se ejecuta solo una vez cuando el componente se monta
   useEffect(() => {
     document.title = "Mis Alumnos";
     fetchMyStudents();
   }, [fetchMyStudents]);
 
+  // --- Manejadores de acciones que la página controlará ---
+  const handleEdit = (student: FullStudentData) => {
+    setStudentToEdit(student); // Guardamos el alumno a editar
+    setIsModalOpen(true);      // Abrimos el modal
+  };
+  
+  const handleAdd = () => {
+    setStudentToEdit(null); // Nos aseguramos que no hay datos de edición
+    setIsModalOpen(true);   // Abrimos el modal
+  };
+
+  const handleActionComplete = () => {
+      setIsModalOpen(false); // Cerramos el modal
+      fetchMyStudents();    // Y refrescamos la tabla para ver los cambios
+  };
+
+  // Creamos las columnas pasando la función `handleEdit`
+  const columns = useMemo(() => createStudentColumns(handleEdit), []);
+
   return (
     <section className="mx-16 mt-28 flex-1">
       <div className="flex flex-row w-full justify-between items-center mb-5">
         <h1 className="text-3xl font-semibold">Mis Alumnos</h1>
-        {/* Pasamos la función de recarga al modal */}
-        <AddStudentDialog onStudentAdded={fetchMyStudents} />
+        {/* Este botón ahora solo llama a nuestra función para abrir el modal en modo "añadir" */}
+        <Button onClick={handleAdd} className="h-10 bg-[#083C6E] text-slate-50 flex items-center gap-2">
+            <PlusIcon className="h-4 w-4" />
+            <span>Añadir alumno</span>
+        </Button>
       </div>
-      {/* La tabla ahora usa los datos del estado y las columnas correctas */}
-      <TableBase<StudentAssigned>
-        data={dataStudentAssigned}
-        columns={columnsStudentAssigned}
-        searchBy="exp"
+
+      {/* El modal ahora vive aquí y es controlado por el estado de la página */}
+      <StudentDialog 
+        studentToEdit={studentToEdit}
+        onActionComplete={handleActionComplete}
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      />
+      
+      {/* La tabla ahora recibe los datos completos y las columnas dinámicas */}
+      <TableBase<FullStudentData>
+        data={allStudents}
+        columns={columns}
+        searchBy="expedient"
       />
     </section>
   );

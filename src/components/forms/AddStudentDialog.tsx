@@ -1,214 +1,130 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { PlusIcon } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// --- Componentes de Formulario Internos para replicar tu layout ---
+// --- Componentes Internos (se mantienen igual para consistencia de layout) ---
+const TextInput = ({ label, value, onChange, className, ...props }: any) => ( <div className={`grid w-full items-center gap-1.5 ${className}`}><Label htmlFor={props.id || label}>{label}</Label><Input value={value} onChange={(e) => onChange(e.target.value)} id={props.id || label} {...props} /></div> );
+const SelectForm = ({ label, value, onValueChange, placeholder, options, className }: any) => ( <div className={`grid w-full items-center gap-1.5 ${className}`}><Label htmlFor={label}>{label}</Label><Select value={value} onValueChange={onValueChange}><SelectTrigger id={label}><SelectValue placeholder={placeholder} /></SelectTrigger><SelectContent>{options.map((option: any) => (<SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>))}</SelectContent></Select></div> );
 
-// Componente para un campo de texto con su etiqueta
-const TextInput = ({ label, value, onChange, className, ...props }: any) => (
-  <div className={`grid w-full items-center gap-1.5 ${className}`}>
-    <Label htmlFor={props.id || label}>{label}</Label>
-    <Input
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      id={props.id || label}
-      {...props}
-    />
-  </div>
-);
+// --- Tipos ---
+type Career = { idCareer: string; name: string; };
+// Usamos un tipo similar al de las columnas
+type StudentData = {
+  idStudent: string;
+  fullName: string;
+  expedient: string;
+  semester: number;
+  idCareer: string;
+};
 
-// Componente para un campo de select con su etiqueta
-const SelectForm = ({
-  label,
-  value,
-  onValueChange,
-  placeholder,
-  options,
-  className,
-}: any) => (
-  <div className={`grid w-full items-center gap-1.5 ${className}`}>
-    <Label htmlFor={label}>{label}</Label>
-    <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger id={label}>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option: any) => (
-          <SelectItem key={option.value} value={option.value}>
-            {option.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  </div>
-);
-
-// --- Componente Principal del Diálogo ---
-
-type Career = { idCareer: string; name: string };
-
-export const AddStudentDialog = ({
-  onStudentAdded,
-}: {
-  onStudentAdded: () => void;
+// --- Componente Principal del Diálogo (Modificado) ---
+export const StudentDialog = ({ studentToEdit, onActionComplete, open, onOpenChange }: {
+  studentToEdit: StudentData | null; // Si es null, creamos. Si tiene datos, editamos.
+  onActionComplete: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [studentName, setStudentName] = useState("");
-  const [studentExp, setStudentExp] = useState("");
+  // Estados del formulario
+  const [fullName, setFullName] = useState("");
+  const [expedient, setExpedient] = useState("");
   const [semester, setSemester] = useState("");
-  const [careerId, setCareerId] = useState("");
+  const [idCareer, setIdCareer] = useState("");
+  // Estado para las carreras y errores
   const [careers, setCareers] = useState<Career[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  const isEditMode = studentToEdit !== null;
+
+  // Efecto para llenar el formulario cuando se abre
   useEffect(() => {
-    if (isOpen) {
+    if (open) {
+      if (isEditMode) {
+        // Modo Edición: Llenar con datos existentes
+        setFullName(studentToEdit.fullName);
+        setExpedient(studentToEdit.expedient);
+        setSemester(String(studentToEdit.semester));
+        setIdCareer(studentToEdit.idCareer);
+      } else {
+        // Modo Creación: Limpiar el formulario
+        resetForm();
+      }
+      
+      // Cargar carreras en ambos modos
       const fetchCareers = async () => {
         try {
           const response = await fetch("/api/careers");
           if (!response.ok) throw new Error("Error al cargar carreras");
-          const data: Career[] = await response.json();
-          setCareers(data);
+          setCareers(await response.json());
         } catch (err) {
           setError("No se pudieron cargar las carreras.");
         }
       };
       fetchCareers();
     }
-  }, [isOpen]);
+  }, [studentToEdit, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
+    const url = isEditMode ? '/api/students/update' : '/api/students/register';
+    const method = isEditMode ? 'PUT' : 'POST';
+
     try {
-      const response = await fetch("/api/students/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
-          fullName: studentName,
-          expedient: studentExp,
+          idStudent: isEditMode ? studentToEdit.idStudent : undefined,
+          fullName,
+          expedient,
           semester: Number(semester),
-          idCareer: careerId,
+          idCareer,
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al añadir el alumno");
+        throw new Error(errorData.error || `Error al ${isEditMode ? 'actualizar' : 'crear'} el alumno`);
       }
 
-      onStudentAdded();
-      resetForm();
-      setIsOpen(false);
+      onActionComplete(); // Llama a la función para refrescar la tabla
+      onOpenChange(false); // Cierra el modal
+
     } catch (err: any) {
       setError(err.message);
     }
   };
-
+  
   const resetForm = () => {
-    setStudentName("");
-    setStudentExp("");
-    setSemester("");
-    setCareerId("");
-    setError(null);
+    setFullName(""); setExpedient(""); setSemester(""); setIdCareer(""); setError(null);
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open) => {
-        setIsOpen(open);
-        if (!open) resetForm();
-      }}
-    >
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="h-10 bg-[#083C6E] text-slate-50 flex items-center gap-2"
-        >
-          <>
-            <PlusIcon className="h-4 w-4" />
-            <span>Añadir alumno</span>
-          </>
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="w-full grid items-center gap-8 md:gap-12 max-w-[40vw] p-10 overflow-y-auto">
+    <Dialog open={open} onOpenChange={(open) => { onOpenChange(open); if (!open) resetForm(); }}>
+      <DialogContent className="w-full grid items-center gap-8 md:gap-12 max-w-[40vw] p-10">
         <DialogHeader>
           <DialogTitle className="text-center font-medium text-2xl">
-            Añadir Alumno
+            {isEditMode ? 'Editar Alumno' : 'Añadir Alumno'}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          {/* Usamos tu estructura de grid original */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
-            <TextInput
-              label="Nombre Completo:"
-              placeholder="Nombre del alumno..."
-              value={studentName}
-              onChange={setStudentName}
-              className="col-span-2"
-            />
-            <TextInput
-              label="Expediente:"
-              placeholder="123456"
-              value={studentExp}
-              onChange={setStudentExp}
-              className="col-span-1"
-            />
-            <SelectForm
-              label="Semestre:"
-              placeholder="Seleccione un semestre"
-              value={semester}
-              onValueChange={setSemester}
-              options={Array.from({ length: 9 }, (_, i) => ({
-                value: String(i + 1),
-                label: `${i + 1}° Semestre`,
-              }))}
-              className="col-span-1"
-            />
-            <SelectForm
-              label="Carrera:"
-              placeholder="Seleccione una carrera"
-              value={careerId}
-              onValueChange={setCareerId}
-              options={careers.map((c) => ({
-                value: c.idCareer,
-                label: c.name,
-              }))}
-              className="col-span-2"
-            />
-          </div>
-
-          {error && (
-            <p className="text-red-500 text-sm text-center -mt-4">{error}</p>
-          )}
-
-          <DialogFooter className="h-11 justify-center">
-            <Button type="submit" className="h-full w-80 bg-[#083C6E]">
-              Añadir Alumno
-            </Button>
-          </DialogFooter>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+                <TextInput label="Nombre Completo:" value={fullName} onChange={setFullName} className="col-span-2" />
+                <TextInput label="Expediente:" value={expedient} onChange={setExpedient} className="col-span-1" disabled={isEditMode} />
+                <SelectForm label="Semestre:" value={semester} onValueChange={setSemester} options={Array.from({ length: 9 }, (_, i) => ({ value: String(i + 1), label: `${i + 1}° Semestre` }))} className="col-span-1" />
+                <SelectForm label="Carrera:" value={idCareer} onValueChange={setIdCareer} options={careers.map(c => ({ value: c.idCareer, label: c.name }))} className="col-span-2" />
+            </div>
+            {error && <p className="text-red-500 text-sm text-center -mt-4">{error}</p>}
+            <DialogFooter className="h-11 justify-center">
+                <Button type="submit" className="h-full w-80 bg-[#083C6E]">{isEditMode ? 'Guardar Cambios' : 'Añadir Alumno'}</Button>
+            </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
