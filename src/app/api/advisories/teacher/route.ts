@@ -25,6 +25,30 @@ export async function GET(req: NextRequest) {
     }
     const advisories = await prisma.advisories.findMany({
       where: { cveMaestro },
+      include: {
+        student: {
+          select: {
+            fullName: true,
+            expedient: true,
+            semester: true,
+            idCareer: true,
+            career: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        subject: {
+          select: {
+            idSubject: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        creation_date: "desc",
+      },
     });
 
     if (!advisories || advisories.length === 0) {

@@ -51,3 +51,8 @@ export type advisoriesApi = {
         name: string
     }
 }
+
+export type subjectsApi = {
+    name: string,
+    total: number,
+}
