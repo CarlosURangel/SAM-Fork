@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { TableBase } from '@/components/tables/TableBase';
 import { columnsHistoryAdmin } from '@/const/History';
 import { HistoryAdmin } from '@/types/table';
-import { useParams } from 'next/navigation';
 import { advisoriesApi } from '@/types/apis';
 
 

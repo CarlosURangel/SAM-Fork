@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import {
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -28,11 +27,10 @@ export function TableBase<TData>({
   data,
   columns,
   searchBy,
+  searchValue,
 }: TableBaseProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [globalFilter, setGlobalFilter] = React.useState(searchValue ?? "");
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -41,7 +39,7 @@ export function TableBase<TData>({
     data,
     columns,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -50,10 +48,30 @@ export function TableBase<TData>({
     onRowSelectionChange: setRowSelection,
     state: {
       sorting,
-      columnFilters,
+      globalFilter,
       columnVisibility,
       rowSelection,
     },
+    globalFilterFn: (row, columnId, filterValue) => {
+    // Si no se proporcionó un valor de búsqueda o un `searchBy`, no apliques el filtro
+    if (!filterValue || !searchBy) return true;
+
+    // Asegúrate de que searchBy sea un array
+    const columnsToSearch = Array.isArray(searchBy) ? searchBy : [searchBy];
+    const searchValueLower = String(filterValue).toLowerCase();
+
+    // Itera sobre las columnas especificadas para buscar
+    return columnsToSearch.some((colKey) => {
+      // Verifica que la clave sea una string antes de usarla
+      if (typeof colKey === 'string') {
+        const cellValue = row.getValue(colKey);
+        if (cellValue !== null && cellValue !== undefined) {
+          return String(cellValue).toLowerCase().includes(searchValueLower);
+        }
+      }
+      return false;
+    });
+  },
   });
 
   return (
@@ -61,14 +79,9 @@ export function TableBase<TData>({
       {searchBy && (
         <div className="flex items-center justify-end py-4">
           <Input
-            placeholder={`Buscar`}
-            value={
-              (table.getColumn(searchBy as string)?.getFilterValue() as string) ??
-              ""
-            }
-            onChange={(event) =>
-              table.getColumn(searchBy as string)?.setFilterValue(event.target.value)
-            }
+            placeholder="Buscar..."
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
             className="max-w-sm h-9"
           />
         </div>
@@ -79,13 +92,13 @@ export function TableBase<TData>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-[#64748B] h-12">
+                  <TableHead key={header.id} className="h-12 text-[#64748B]">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -100,10 +113,7 @@ export function TableBase<TData>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="h-14">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>

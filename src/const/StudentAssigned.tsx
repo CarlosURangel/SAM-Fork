@@ -100,7 +100,7 @@ export const columnsStudentAssigned: ColumnDef<StudentAssigned>[] = [
         header: "",
         cell: ({ row }) => (
             <Link
-                href={``}
+                href={`/dashboard/historial/${row.original.nameStudent}`}
                 className="text-blue-600 underline"
             >
                 Ver Historial

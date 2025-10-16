@@ -4,7 +4,7 @@ import { TableBase } from '@/components/tables/TableBase';
 import { columnsHistoryAdmin } from '@/const/History';
 import { HistoryAdmin } from '@/types/table';
 import { useParams } from 'next/navigation';
-import { historyAdminApi, studentsApi } from '@/types/apis';
+import { advisoriesApi } from '@/types/apis';
 
 
 const page = () => {
@@ -12,10 +12,14 @@ const page = () => {
     const params = useParams();
 
     const [dataHistoryAdmin, setDataHistoryAdmin] = useState<HistoryAdmin[]>([]);
-    const [teacher, setTeacher] = useState<string>('');
+
+    const searchValue = params.name?.toString().replaceAll('%20', ' ') || '';
+
+    const searchs = ['students', 'nameTeacher', 'date', 'semester', 'subject'] as (keyof HistoryAdmin)[];    
 
     useEffect(() => {
-        document.title = 'Alumnos Asignados';
+
+        document.title = 'Historial';
 
         const fetchStudents = async () => {
             try {
@@ -26,16 +30,15 @@ const page = () => {
                     },
                     credentials: 'include',
                 });
-                const data: historyAdminApi = await response.json();
-                // const newData: StudentAssigned[] = data.students.map((student) => ({
-                //     exp: student.expedient,
-                //     nameStudent: student.fullName,
-                //     career: student.career.name,
-                //     semester: student.semester,
-                // }));
-                // setDataStudentAssigned(newData)
-                console.log(data);
-                
+                const data: advisoriesApi[] = await response.json();
+                const newData: HistoryAdmin[] = data.map((advisory) => ({
+                    date: advisory.advisoryDate.split('T')[0],
+                    nameTeacher: advisory.teacher.fullName,
+                    students: advisory.student.fullName,
+                    semester: advisory.student.semester.toString(),
+                    subject: advisory.subject.name,
+                }));
+                setDataHistoryAdmin(newData)
             } catch (error) {
                 console.error('Error al obtener los profesores:', error);
             }
@@ -46,8 +49,8 @@ const page = () => {
 
     return (
         <section className='mx-16 mt-28 flex-1'>
-            <h1 className='text-3xl mb-5'>Historial</h1>
-            <TableBase<HistoryAdmin> data={dataHistoryAdmin} columns={columnsHistoryAdmin} searchBy='nameTeacher' />
+            <h1 className='text-3xl mb-5 font-semibold'>Historial</h1>
+            <TableBase<HistoryAdmin> data={dataHistoryAdmin} columns={columnsHistoryAdmin} searchBy={searchs} searchValue={searchValue}/>
         </section>
     )
 }

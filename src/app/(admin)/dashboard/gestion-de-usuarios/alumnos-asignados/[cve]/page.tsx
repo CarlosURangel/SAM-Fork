@@ -14,6 +14,8 @@ const page = () => {
     const [dataStudentAssigned, setDataStudentAssigned] = useState<StudentAssigned[]>([]);
     const [teacher, setTeacher] = useState<string>('');
 
+    const searchs = ['exp', 'nameStudent', 'career', 'semester'] as (keyof StudentAssigned)[];
+
     useEffect(() => {
         document.title = 'Alumnos Asignados';
 
@@ -28,7 +30,7 @@ const page = () => {
                     },
                     credentials: 'include',
                 });
-                const data:studentsApi = await response.json();
+                const data: studentsApi = await response.json();
                 const newData: StudentAssigned[] = data.students.map((student) => ({
                     exp: student.expedient,
                     nameStudent: student.fullName,
@@ -52,7 +54,7 @@ const page = () => {
                 <h1 className='text-3xl font-semibold'>Alumnos Asignados</h1>
                 <p className='text-2xl'>Profesor: {teacher}</p>
             </div>
-            <TableBase<StudentAssigned> data={dataStudentAssigned} columns={columnsStudentAssigned} searchBy='exp' />
+            <TableBase<StudentAssigned> data={dataStudentAssigned} columns={columnsStudentAssigned} searchBy={searchs} />
         </section>
     )
 }
