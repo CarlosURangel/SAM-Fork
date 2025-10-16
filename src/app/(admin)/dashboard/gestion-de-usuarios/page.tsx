@@ -30,7 +30,6 @@ const page = () => {
                     total: teacher.total,
                     cveTeacher: teacher.cveMaestro
                 }));
-                console.log(data);
                 setDataUserManagement(newData)
             } catch (error) {
                 console.error('Error al obtener los profesores:', error);
