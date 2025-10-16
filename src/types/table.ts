@@ -33,5 +33,6 @@ export type StudentAssigned = {
 export type TableBaseProps<TData> = {
   data: TData[];
   columns: ColumnDef<TData, any>[];
-  searchBy?: keyof TData;
+  searchBy?: keyof TData | (keyof TData)[];
+  searchValue?: string;
 };
