@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from 'react'
 import { TableBase } from '@/components/tables/TableBase';
 import { StudentAssigned } from '@/types/table';
-import { columnsStudentAssigned, dataStudentAssigned } from '@/const/StudentAssigned';
+import { columnsStudentAssigned } from '@/const/StudentAssigned';
 import { useParams } from 'next/navigation';
+import { studentsApi } from '@/types/apis';
 
 
 const page = () => {
@@ -11,6 +12,9 @@ const page = () => {
     const params = useParams();
 
     const [dataStudentAssigned, setDataStudentAssigned] = useState<StudentAssigned[]>([]);
+    const [teacher, setTeacher] = useState<string>('');
+
+    const searchs = ['exp', 'nameStudent', 'career', 'semester'] as (keyof StudentAssigned)[];
 
     useEffect(() => {
         document.title = 'Alumnos Asignados';
@@ -26,17 +30,15 @@ const page = () => {
                     },
                     credentials: 'include',
                 });
-                const data = await response.json();
-                // const newData: UserManagement[] = data.map((teacher: teachersApi) => ({
-                //     nameTeacher: teacher.fullName,
-                //     students: 'ver',
-                //     stadistics: 'ver',
-                //     total: teacher.TotalAdvisories,
-                //     cveTeacher: teacher.cveMaestro
-                // }));
-                // console.log(newData);
-                // setDataUserManagement(newData)
-                console.log(data);
+                const data: studentsApi = await response.json();
+                const newData: StudentAssigned[] = data.students.map((student) => ({
+                    exp: student.expedient,
+                    nameStudent: student.fullName,
+                    career: student.career.name,
+                    semester: student.semester,
+                }));
+                setDataStudentAssigned(newData)
+                setTeacher(data.fullName);
 
             } catch (error) {
                 console.error('Error al obtener los profesores:', error);
@@ -48,8 +50,11 @@ const page = () => {
 
     return (
         <section className='mx-16 mt-28 flex-1'>
-            <h1 className='text-3xl'>Gestión de Usuarios</h1>
-            <TableBase<StudentAssigned> data={dataStudentAssigned} columns={columnsStudentAssigned} searchBy='exp' />
+            <div className='flex flex-col gap-5'>
+                <h1 className='text-3xl font-semibold'>Alumnos Asignados</h1>
+                <p className='text-2xl'>Profesor: {teacher}</p>
+            </div>
+            <TableBase<StudentAssigned> data={dataStudentAssigned} columns={columnsStudentAssigned} searchBy={searchs} />
         </section>
     )
 }

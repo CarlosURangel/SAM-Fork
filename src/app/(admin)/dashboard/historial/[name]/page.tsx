@@ -3,12 +3,19 @@ import React, { useEffect, useState } from 'react'
 import { TableBase } from '@/components/tables/TableBase';
 import { columnsHistoryAdmin } from '@/const/History';
 import { HistoryAdmin } from '@/types/table';
+import { useParams } from 'next/navigation';
 import { advisoriesApi } from '@/types/apis';
 
 
 const page = () => {
 
+    const params = useParams();
+
     const [dataHistoryAdmin, setDataHistoryAdmin] = useState<HistoryAdmin[]>([]);
+
+    const searchValue = params.name?.toString().replaceAll('%20', ' ') || '';
+
+    const searchs = ['students', 'nameTeacher', 'date', 'semester', 'subject'] as (keyof HistoryAdmin)[];    
 
     useEffect(() => {
 
@@ -43,7 +50,7 @@ const page = () => {
     return (
         <section className='mx-16 mt-28 flex-1'>
             <h1 className='text-3xl mb-5 font-semibold'>Historial</h1>
-            <TableBase<HistoryAdmin> data={dataHistoryAdmin} columns={columnsHistoryAdmin} searchBy='nameTeacher' />
+            <TableBase<HistoryAdmin> data={dataHistoryAdmin} columns={columnsHistoryAdmin} searchBy={searchs} searchValue={searchValue}/>
         </section>
     )
 }
