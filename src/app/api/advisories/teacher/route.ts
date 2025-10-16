@@ -29,7 +29,9 @@ export async function GET(req: NextRequest) {
         student: {
           select: {
             fullName: true,
+            expedient: true,
             semester: true,
+            idCareer: true,
             career: {
               select: {
                 name: true,
@@ -39,6 +41,7 @@ export async function GET(req: NextRequest) {
         },
         subject: {
           select: {
+            idSubject: true,
             name: true,
           },
         },
