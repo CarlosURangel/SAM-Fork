@@ -25,6 +25,13 @@ export async function GET(req: NextRequest) {
     }
     const students = await prisma.students.findMany({
       where: { cveMaestro },
+      include: {
+        career: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
     if (!students || students.length === 0) {
       return NextResponse.json(
