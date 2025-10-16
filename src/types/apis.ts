@@ -4,6 +4,7 @@ export type teachersApi = {
     cveMaestro: string,
     fullName: string,
     idMaestro: string,
+    total: number,
     rol: string,
 }
 

@@ -27,10 +27,10 @@ const page = () => {
                     nameTeacher: teacher.fullName,
                     students: 'ver',
                     stadistics: 'ver',
-                    total: teacher.TotalAdvisories,
+                    total: teacher.total,
                     cveTeacher: teacher.cveMaestro
                 }));
-                console.log(newData);
+                console.log(data);
                 setDataUserManagement(newData)
             } catch (error) {
                 console.error('Error al obtener los profesores:', error);
