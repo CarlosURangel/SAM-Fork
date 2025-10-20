@@ -10,6 +10,8 @@ const page = () => {
 
     const [dataHistoryAdmin, setDataHistoryAdmin] = useState<HistoryAdmin[]>([]);
 
+    const searchs = ['students', 'nameTeacher', 'date', 'semester', 'subject'] as (keyof HistoryAdmin)[];
+
     useEffect(() => {
 
         document.title = 'Historial';
@@ -43,7 +45,7 @@ const page = () => {
     return (
         <section className='mx-16 mt-28 flex-1'>
             <h1 className='text-3xl mb-5 font-semibold'>Historial</h1>
-            <TableBase<HistoryAdmin> data={dataHistoryAdmin} columns={columnsHistoryAdmin} searchBy='nameTeacher' />
+            <TableBase<HistoryAdmin> data={dataHistoryAdmin} columns={columnsHistoryAdmin} searchBy={searchs} />
         </section>
     )
 }
