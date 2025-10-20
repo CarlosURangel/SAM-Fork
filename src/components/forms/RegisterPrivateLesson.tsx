@@ -10,24 +10,22 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { FullStudentData } from "@/const/StudentAssignedTable"; // Importamos el tipo del estudiante
+import { FullStudentData } from "@/const/StudentAssignedTable";
 import { TextInput } from "./TextInput";
 import { SelectForm } from "./SelectForm";
 import { DateTimeInput } from "./DateTimeInput";
 
-// Tipo para la asesoría completa, que usaremos para editar
 export type FullAdvisoryData = {
   idAdvisory: string;
   advisoryDate: string | null;
   topic: string | null;
   status: string;
-  student: FullStudentData; // El tipo del estudiante viene de la tabla de alumnos
+  student: FullStudentData;
   subject: { idSubject: string; name: string };
 };
 
 type Subject = { idSubject: string; name: string };
 
-// El componente ya es capaz de registrar y editar
 export const AdvisoryDialog = ({
   studentForNew,
   advisoryToEdit,
@@ -49,14 +47,11 @@ export const AdvisoryDialog = ({
   const [error, setError] = useState<string | null>(null);
 
   const isEditMode = advisoryToEdit != null;
-  // Determinamos el alumno relevante para esta operación
   const student = isEditMode ? advisoryToEdit.student : studentForNew;
 
   useEffect(() => {
-    // Solo proceder si el modal está abierto y tenemos un alumno
     if (open && student) {
       if (isEditMode && advisoryToEdit) {
-        // Modo Edición: Pre-llenar el formulario
         setTopic(advisoryToEdit.topic || "");
         setIdSubject(advisoryToEdit.subject.idSubject);
         setSubjectName(advisoryToEdit.subject.name);
@@ -68,11 +63,9 @@ export const AdvisoryDialog = ({
           setAdvisoryDateTime(localDate.toISOString().slice(0, 16));
         }
       } else {
-        // Modo Creación: Asegurarse de que el formulario esté limpio
         resetForm();
       }
 
-      // Esta función se ejecuta en ambos modos (crear y editar)
       const fetchSubjects = async () => {
         try {
           const response = await fetch("/api/subjects/filter", {
@@ -84,7 +77,7 @@ export const AdvisoryDialog = ({
             }),
           });
 
-          const data = await response.json(); // Leemos la respuesta una vez
+          const data = await response.json();
 
           console.log("Datos enviados a la API:", {
             idCareer: student.idCareer,

@@ -10,6 +10,7 @@ import {
   SortingState,
   useReactTable,
   VisibilityState,
+  Row, // Importa el tipo Row
 } from "@tanstack/react-table";
 
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TableBaseProps } from "@/types/table";
+
+const getNestedValue = (obj: any, path: string): any => {
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+};
 
 export function TableBase<TData>({
   data,
@@ -52,26 +57,21 @@ export function TableBase<TData>({
       columnVisibility,
       rowSelection,
     },
-    globalFilterFn: (row, columnId, filterValue) => {
-    // Si no se proporcionó un valor de búsqueda o un `searchBy`, no apliques el filtro
-    if (!filterValue || !searchBy) return true;
+    globalFilterFn: (row: Row<TData>, columnId: string, filterValue: string) => {
+      if (!filterValue || !searchBy) return true;
 
-    // Asegúrate de que searchBy sea un array
-    const columnsToSearch = Array.isArray(searchBy) ? searchBy : [searchBy];
-    const searchValueLower = String(filterValue).toLowerCase();
+      const columnsToSearch = Array.isArray(searchBy) ? searchBy : [searchBy];
+      const searchValueLower = filterValue.toLowerCase();
 
-    // Itera sobre las columnas especificadas para buscar
-    return columnsToSearch.some((colKey) => {
-      // Verifica que la clave sea una string antes de usarla
-      if (typeof colKey === 'string') {
-        const cellValue = row.getValue(colKey);
+      return columnsToSearch.some((colKey) => {
+        const cellValue = getNestedValue(row.original, colKey);
+
         if (cellValue !== null && cellValue !== undefined) {
           return String(cellValue).toLowerCase().includes(searchValueLower);
         }
-      }
-      return false;
-    });
-  },
+        return false;
+      });
+    },
   });
 
   return (
@@ -96,9 +96,9 @@ export function TableBase<TData>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>

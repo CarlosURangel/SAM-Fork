@@ -40,10 +40,15 @@ export async function GET(
         students: {
           select: {
             idStudent: true,
-            fullName: true,
             expedient: true,
-            career: { select: { name: true } },
+            fullName: true,
             semester: true,
+            idCareer: true,
+            career: {
+              select: {
+                name: true,
+              },
+            },
           }
         },
       },
