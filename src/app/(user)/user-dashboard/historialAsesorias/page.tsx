@@ -52,6 +52,8 @@ const Page = () => {
     null
   );
 
+  const colums2Search = ['student.fullName', 'subject.name'];
+
   const fetchHistory = useCallback(async () => {
     try {
       const response = await fetch("/api/advisories/teacher");
@@ -94,7 +96,7 @@ const Page = () => {
         onActionComplete={handleActionComplete}
       />
 
-      <TableBase<FullAdvisoryData> data={allAdvisories} columns={columns} />
+      <TableBase<FullAdvisoryData> data={allAdvisories} columns={columns} searchBy={colums2Search}/>
     </section>
   );
 };

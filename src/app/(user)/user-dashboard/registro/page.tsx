@@ -21,6 +21,8 @@ const Page = () => {
     null
   );
 
+  const colums2Search = ['expedient', 'fullName', 'career.name', 'semester'];
+
   // Estados para el modal de Asesoría
   const [isAdvisoryModalOpen, setIsAdvisoryModalOpen] = useState(false);
   const [studentForNewAdvisory, setStudentForNewAdvisory] =
@@ -61,7 +63,7 @@ const Page = () => {
 
   const handleViewHistory = (student: FullStudentData) => {
     router.push(
-      `/user-dashboard/historial?search=${encodeURIComponent(student.fullName)}`
+      `/user-dashboard/historialAsesorias/${encodeURIComponent(student.fullName)}`
     );
   };
 
@@ -116,7 +118,7 @@ const Page = () => {
       <TableBase<FullStudentData>
         data={allStudents}
         columns={columns}
-        searchBy="expedient"
+        searchBy={colums2Search}
       />
     </section>
   );
