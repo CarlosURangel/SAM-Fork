@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 // El tipo completo del objeto que recibimos de la API
 export type FullStudentData = {
@@ -15,7 +16,6 @@ export type FullStudentData = {
 // Convertimos las columnas en una función que recibe los manejadores de eventos
 export const createStudentColumns = (
   onEdit: (student: FullStudentData) => void,
-  onViewHistory: (student: FullStudentData) => void,
   onRegister: (student: FullStudentData) => void
 ): ColumnDef<FullStudentData>[] => [
   {
@@ -46,20 +46,22 @@ export const createStudentColumns = (
     id: "actions",
     header: "",
     cell: ({ row }) => {
-      const student = row.original; // Aquí tenemos todos los datos de la fila
+      const student = row.original;
 
       return (
         <div className="flex gap-2 justify-end">
           <Button variant="outline" size="sm" onClick={() => onEdit(student)}>
             Editar
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onViewHistory(student)}
+          <Link
+            href={`/user-dashboard/historial/${encodeURIComponent(
+              student.fullName
+            )}`}
           >
-            Ver Historial
-          </Button>
+            <Button variant="outline" size="sm">
+              Ver Historial
+            </Button>
+          </Link>
           <Button
             variant="outline"
             size="sm"
