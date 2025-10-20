@@ -78,7 +78,7 @@ const Page = () => {
   };
 
   const columns = useMemo(
-    () => createStudentColumns(handleEditStudent, handleRegisterAdvisory),
+    () => createStudentColumns(handleEditStudent, handleRegisterAdvisory, handleViewHistory),
     []
   );
 
