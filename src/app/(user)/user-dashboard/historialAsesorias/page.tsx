@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 
-// --- Columnas Dinámicas ---
+// Columnas Dinámicas
 const createHistoryColumns = (
   onEdit: (advisory: FullAdvisoryData) => void
 ): ColumnDef<FullAdvisoryData>[] => [
