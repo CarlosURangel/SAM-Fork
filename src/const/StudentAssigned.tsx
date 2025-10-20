@@ -4,6 +4,8 @@ import {
 } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
 import Link from "next/link";
+import { FullStudentData } from "./StudentAssignedTable";
+import { Button } from "@/components/ui/button";
 
 
 export const dataStudentAssigned: StudentAssigned[] = [
@@ -45,66 +47,54 @@ export const dataStudentAssigned: StudentAssigned[] = [
     },
 ]
 
-export const columnsStudentAssigned: ColumnDef<StudentAssigned>[] = [
-    {
-        accessorKey: "exp",
-        header: "Expediente",
-        cell: ({ row }) => (
-            <div className="capitalize flex" > {row.getValue("exp")} </div>
-        ),
-    },
-    {
-        accessorKey: "nameStudent",
-        header: ({ column }) => {
-            return (
+export const createStudentsColumns = (
+    onEdit: (student: FullStudentData) => void,
+    onViewHistory: (student: FullStudentData) => void,
+): ColumnDef<FullStudentData>[] => [
+        {
+            accessorKey: "expedient",
+            header: "Expediente",
+        },
+        {
+            accessorKey: "fullName",
+            header: ({ column }) => (
                 <button
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")
-                    }
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     className="p-0 m-0 flex items-center gap-2"
                 >
                     Nombre del alumno
-                    < ArrowUpDown size={15} />
+                    <ArrowUpDown size={15} />
                 </button>
-            )
+            ),
         },
-        cell: ({ row }) => <div> {row.getValue("nameStudent")} </div>,
-    },
-    {
-        accessorKey: "career",
-        header: "Carrera",
-        cell: ({ row }) => (
-            <div className="capitalize" > {row.getValue("career")} </div>
-        ),
-    },
-    {
-        accessorKey: "semester",
-        header: "Semestre",
-        cell: ({ row }) => (
-            <div className="capitalize" > {row.getValue("semester")} </div>
-        ),
-    },
-    {
-        accessorKey: "edit",
-        header: "",
-        cell: ({ row }) => (
-            <Link
-                href={``}
-                className="text-blue-600 underline"
-            >
-                Editar
-            </Link>
-        ),
-    },
-    {
-        accessorKey: "seeHistory",
-        header: "",
-        cell: ({ row }) => (
-            <Link
-                href={`/dashboard/historial/${row.original.nameStudent}`}
-                className="text-blue-600 underline"
-            >
-                Ver Historial
-            </Link>
-        ),
-    },
-]
+        {
+            accessorKey: "career.name", 
+            header: "Carrera",
+        },
+        {
+            accessorKey: "semester",
+            header: "Semestre",
+        },
+        {
+            id: "actions",
+            header: "",
+            cell: ({ row }) => {
+                const student = row.original; // Aquí tenemos todos los datos de la fila
+
+                return (
+                    <div className="flex gap-2 justify-end">
+                        <Button variant="outline" size="sm" onClick={() => onEdit(student)}>
+                            Editar
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onViewHistory(student)}
+                        >
+                            Ver Historial
+                        </Button>
+                    </div>
+                );
+            },
+        },
+    ]

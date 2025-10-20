@@ -73,11 +73,13 @@ export const StudentDialog = ({
   onActionComplete,
   open,
   onOpenChange,
+  cveMaestro
 }: {
   studentToEdit: StudentData | null; // Si es null, creamos. Si tiene datos, editamos.
   onActionComplete: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  cveMaestro?: string;
 }) => {
   // Estados del formulario
   const [fullName, setFullName] = useState("");
@@ -136,6 +138,7 @@ export const StudentDialog = ({
           expedient,
           semester: Number(semester),
           idCareer,
+          cveMaestroBody: cveMaestro ?? "",
         }),
       });
 
@@ -143,7 +146,7 @@ export const StudentDialog = ({
         const errorData = await response.json();
         throw new Error(
           errorData.error ||
-            `Error al ${isEditMode ? "actualizar" : "crear"} el alumno`
+          `Error al ${isEditMode ? "actualizar" : "crear"} el alumno`
         );
       }
 
@@ -196,7 +199,7 @@ export const StudentDialog = ({
               label="Semestre:"
               value={semester}
               onValueChange={setSemester}
-              options={Array.from({ length: 9 }, (_, i) => ({
+              options={Array.from({ length: 8 }, (_, i) => ({
                 value: String(i + 1),
                 label: `${i + 1}° Semestre`,
               }))}

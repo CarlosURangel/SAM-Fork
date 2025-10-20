@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
 
-    const { fullName, expedient, semester, idCareer } = await req.json()
+    const { fullName, expedient, semester, idCareer, cveMaestroBody } = await req.json()
 
     if (typeof fullName !== 'string' || fullName.length < 8) {
       return NextResponse.json({ error: 'El nombre completo debe ser un string de al menos 8 caracteres.' }, { status: 400 })
@@ -41,13 +41,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'La carrera es obligatoria.' }, { status: 400 })
     }
 
+    console.log(cveAdmin);
+
+
     const student = await prisma.students.create({
       data: {
         fullName,
         expedient,
         semester: semestreNum,
         idCareer,
-        cveMaestro,
+        cveMaestro: cveMaestro ?? cveMaestroBody,
       },
     })
     return NextResponse.json(student, { status: 201 })
