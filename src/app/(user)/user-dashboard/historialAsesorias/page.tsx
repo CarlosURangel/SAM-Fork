@@ -9,6 +9,42 @@ import {
 } from "@/const/AsesoriaHistory";
 import { ColumnDef } from "@tanstack/react-table";
 
+// Columnas Dinámicas
+const createHistoryColumns = (
+  onEdit: (advisory: FullAdvisoryData) => void
+): ColumnDef<FullAdvisoryData>[] => [
+  { accessorKey: "student.fullName", header: "Alumno" },
+  { accessorKey: "subject.name", header: "Materia" },
+  {
+    accessorKey: "advisoryDate",
+    header: "Fecha",
+    cell: ({ row }) =>
+      row.original.advisoryDate
+        ? new Date(row.original.advisoryDate).toLocaleDateString("es-MX", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        : "N/A",
+  },
+  { accessorKey: "topic", header: "Tema" },
+  {
+    id: "actions",
+    header: () => <div className="text-right">Acciones</div>,
+    cell: ({ row }) => (
+      <div className="text-right">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onEdit(row.original)}
+        >
+          Editar
+        </Button>
+      </div>
+    ),
+  },
+];
+
 const Page = () => {
   const params = useParams();
   // 1. El estado ahora almacena los datos completos y originales de la API
