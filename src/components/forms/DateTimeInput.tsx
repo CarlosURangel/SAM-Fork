@@ -21,8 +21,8 @@ export const DateTimeInput = ({
       <Input
         type="datetime-local"
         id={label}
-        value={value} // 3. Usamos el valor que nos pasan por props
-        onChange={(e) => onChange(e.target.value)} // 4. Notificamos al padre cuando el valor cambia
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="h-11"
       />
     </div>
