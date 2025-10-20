@@ -7,7 +7,7 @@ import {
   createHistoryColumns,
   FullAdvisoryData,
 } from "@/const/AsesoriaHistory";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table"; // Comentario
 
 const Page = () => {
   const params = useParams();
