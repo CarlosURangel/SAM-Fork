@@ -199,6 +199,7 @@ export const AdvisoryDialog = ({
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 className="w-full resize-y"
+                maxLength={150}
               />
             </div>
           </div>

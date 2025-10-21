@@ -2,19 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verify } from "jsonwebtoken";
 
-const CHART_COLORS = [
-  "#083C6E",
-  "#4299E1",
-  "#F56565",
-  "#48BB78",
-  "#ED8936",
-  "#9F7AEA",
-  "#38B2AC",
-  "#ECC94B",
-  "#D53F8C",
-  "#667EEA",
-];
-
 export async function GET(req: NextRequest) {
   try {
     const cookie = req.cookies.get("Auth_SAM");
@@ -80,7 +67,6 @@ export async function GET(req: NextRequest) {
           ([subject, count], index) => ({
             subject,
             count,
-            fill: CHART_COLORS[index % CHART_COLORS.length],
           })
         ),
       })

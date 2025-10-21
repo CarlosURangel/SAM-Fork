@@ -73,7 +73,7 @@ export const StudentDialog = ({
   onActionComplete,
   open,
   onOpenChange,
-  cveMaestro
+  cveMaestro,
 }: {
   studentToEdit: StudentData | null; // Si es null, creamos. Si tiene datos, editamos.
   onActionComplete: () => void;
@@ -146,7 +146,7 @@ export const StudentDialog = ({
         const errorData = await response.json();
         throw new Error(
           errorData.error ||
-          `Error al ${isEditMode ? "actualizar" : "crear"} el alumno`
+            `Error al ${isEditMode ? "actualizar" : "crear"} el alumno`
         );
       }
 
@@ -187,6 +187,7 @@ export const StudentDialog = ({
               value={fullName}
               onChange={setFullName}
               className="col-span-2"
+              maxLength={70}
             />
             <TextInput
               label="Expediente:"
@@ -194,6 +195,8 @@ export const StudentDialog = ({
               onChange={setExpedient}
               className="col-span-1"
               disabled={isEditMode}
+              maxLength={6}
+              type="number"
             />
             <SelectForm
               label="Semestre:"
