@@ -25,7 +25,7 @@ import {
 import { TableBaseProps } from "@/types/table";
 
 const getNestedValue = (obj: any, path: string): any => {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+  return path.split(".").reduce((acc, part) => acc && acc[part], obj);
 };
 
 export function TableBase<TData>({
@@ -57,7 +57,11 @@ export function TableBase<TData>({
       columnVisibility,
       rowSelection,
     },
-    globalFilterFn: (row: Row<TData>, columnId: string, filterValue: string) => {
+    globalFilterFn: (
+      row: Row<TData>,
+      columnId: string,
+      filterValue: string
+    ) => {
       if (!filterValue || !searchBy) return true;
 
       const columnsToSearch = Array.isArray(searchBy) ? searchBy : [searchBy];
@@ -75,7 +79,7 @@ export function TableBase<TData>({
   });
 
   return (
-    <div className="w-full">
+    <div className="w-full pb-24">
       {searchBy && (
         <div className="flex items-center justify-end py-4">
           <Input
@@ -113,7 +117,10 @@ export function TableBase<TData>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="h-14">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
