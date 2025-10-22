@@ -18,7 +18,6 @@ const page = () => {
 
     const [allStudents, setAllStudents] = useState<FullStudentData[]>([]);
     const [teacher, setTeacher] = useState<string>('');
-    console.log(allStudents);
 
     // Estados para el modal de Alumno
     const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);

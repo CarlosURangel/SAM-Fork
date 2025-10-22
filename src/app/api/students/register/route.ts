@@ -55,8 +55,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log(cveAdmin);
-
     const existingStudent = await prisma.students.findFirst({
       where: {
         OR: [{ expedient: expedient }, { fullName: fullName }],

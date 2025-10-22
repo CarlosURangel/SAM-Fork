@@ -14,10 +14,12 @@ import { FullStudentData } from "@/const/StudentAssignedTable";
 import { TextInput } from "./TextInput";
 import { SelectForm } from "./SelectForm";
 import { DateTimeInput } from "./DateTimeInput";
+import { HistoryAdmin } from "@/types/table";
 
 export type FullAdvisoryData = {
   idAdvisory: string;
   advisoryDate: string | null;
+  cveMaestro?: string;
   topic: string | null;
   status: string;
   student: FullStudentData;
@@ -34,7 +36,7 @@ export const AdvisoryDialog = ({
   onActionComplete,
 }: {
   studentForNew?: FullStudentData | null;
-  advisoryToEdit?: FullAdvisoryData | null;
+  advisoryToEdit?: FullAdvisoryData | HistoryAdmin | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onActionComplete: () => void;
@@ -48,6 +50,9 @@ export const AdvisoryDialog = ({
 
   const isEditMode = advisoryToEdit != null;
   const student = isEditMode ? advisoryToEdit.student : studentForNew;
+  const cveMaestro = advisoryToEdit?.cveMaestro || "";
+  console.log(cveMaestro);
+  
 
   useEffect(() => {
     if (open && student) {
@@ -121,6 +126,7 @@ export const AdvisoryDialog = ({
           idSubject,
           advisoryDate: advisoryDateOnly,
           topic,
+          cveMaestroBody: cveMaestro ?? "",
         }),
       });
 
@@ -128,9 +134,11 @@ export const AdvisoryDialog = ({
         const errorData = await response.json();
         throw new Error(
           errorData.error ||
-            `Error al ${isEditMode ? "actualizar" : "registrar"} la asesoría.`
+          `Error al ${isEditMode ? "actualizar" : "registrar"} la asesoría.`
         );
       }
+      console.log(await response.json());
+
       onActionComplete();
       onOpenChange(false);
     } catch (err: any) {
@@ -172,7 +180,7 @@ export const AdvisoryDialog = ({
             <TextInput
               label="Alumno:"
               value={student?.fullName || ""}
-              onChange={() => {}}
+              onChange={() => { }}
               className="col-span-6"
               disabled
             />

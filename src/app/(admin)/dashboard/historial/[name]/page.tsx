@@ -7,6 +7,7 @@ import {
 import { createHistoryColumnsAdmin } from "@/const/History";
 import { HistoryAdmin } from "@/types/table";
 import { useParams } from "next/navigation";
+import { Download } from "lucide-react";
 
 const Page = () => {
     const [allAdvisories, setAllAdvisories] = useState<HistoryAdmin[]>([]);
@@ -45,7 +46,24 @@ const Page = () => {
         fetchHistory();
     };
 
-    const columns = useMemo(() => createHistoryColumnsAdmin(handleEdit), []);
+    const downloadPDF = async (idAdvisory: string) => {
+        try {
+            const response = await fetch(`/api/pdf/${idAdvisory}`, {
+
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            });
+            if (!response.ok) throw new Error("Error al cargar el pdf");
+            console.log(await response.json());
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const columns = useMemo(() => createHistoryColumnsAdmin(handleEdit, downloadPDF), []);
 
     return (
         <section className="mx-16 mt-28 flex-1">
