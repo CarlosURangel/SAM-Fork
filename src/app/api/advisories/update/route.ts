@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(req: NextRequest) {
   try {
-   const cookie = req.cookies.get("Auth_SAM");
+    const cookie = req.cookies.get("Auth_SAM");
     const authToken = cookie?.value;
 
     if (!authToken) {
@@ -17,16 +17,15 @@ export async function PUT(req: NextRequest) {
     const payload = verify(authToken, process.env.JWT_SECRET!);
     const cveMaestro =
       typeof payload === "object" ? payload.cveMaestro : undefined;
-    if (!cveMaestro) {
-      return NextResponse.json(
-        { error: "Token inválido o sin clave de maestro" },
-        { status: 401 }
-      );
+    const cveAdmin = typeof payload === "object" ? payload.cveAdmin : undefined;
+
+    if (!cveMaestro && !cveAdmin) {
+      return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
-    const { idAdvisory, expStudent, idSubject, advisoryDate, topic } =
+    const { idAdvisory, expStudent, idSubject, advisoryDate, topic, cveMaestroBody } =
       await req.json();
 
-    if (!expStudent || !cveMaestro || !idSubject || !advisoryDate || !topic) {
+    if (!expStudent || !idSubject || !advisoryDate || !topic) {
       return NextResponse.json(
         { error: "Faltan datos obligatorios" },
         { status: 400 }
@@ -53,7 +52,7 @@ export async function PUT(req: NextRequest) {
       where: { idAdvisory: idAdvisory },
       data: {
         expStudent,
-        cveMaestro,
+        cveMaestro: cveMaestro ?? cveMaestroBody,
         idSubject,
         advisoryDate: fechaAsesoria,
         topic,

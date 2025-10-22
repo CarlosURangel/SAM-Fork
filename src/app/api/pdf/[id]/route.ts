@@ -8,8 +8,9 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const { id } = await params;
   const advisory = await prisma.advisories.findUnique({
-    where: { idAdvisory: params.id },
+    where: { idAdvisory: id },
     include: {
       teacher: {
         select: {
@@ -153,7 +154,7 @@ export async function GET(
   ];
 
   function drawLabelAndValue(label: string, value: string, y: number) {
-    const gap = 8; 
+    const gap = 8;
     const labelWidth = boldFont.widthOfTextAtSize(label, textFontSize);
     const valueWidth = font.widthOfTextAtSize(value, textFontSize);
     const totalWidth = labelWidth + gap + valueWidth;
@@ -174,8 +175,8 @@ export async function GET(
     });
   }
 
-  let yPosition = height - 170; 
-  const lineSpacing = 28; 
+  let yPosition = height - 170;
+  const lineSpacing = 28;
   const wrapMax = width - 140;
 
   for (const item of datos) {
@@ -202,14 +203,14 @@ export async function GET(
         });
         yPosition -= lineSpacing;
       }
-      yPosition -= 10; 
+      yPosition -= 10;
     } else {
       drawLabelAndValue(item.label, item.value, yPosition);
       yPosition -= lineSpacing;
     }
   }
 
-  const firmaY = 50; 
+  const firmaY = 50;
   const leftX = 100;
   const rightX = width - 220;
   const lineWidth = 130;

@@ -13,6 +13,7 @@ export type HistoryAdmin = {
   idAdvisory: string;
   advisoryDate: string | null;
   topic: string | null;
+  cveMaestro: string;
   status: string;
   student: FullStudentData;
   subject: { idSubject: string; name: string };
