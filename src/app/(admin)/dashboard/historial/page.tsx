@@ -1,78 +1,11 @@
 "use client";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { TableBase } from "@/components/tables/TableBase";
-// Importamos el mismo diálogo y su tipo
 import {
   AdvisoryDialog,
-  FullAdvisoryData,
 } from "@/components/forms/RegisterPrivateLesson";
-import { Button } from "@/components/ui/button";
-import { ColumnDef } from "@tanstack/react-table";
-import { useParams } from "next/navigation";
 import { HistoryAdmin } from "../../../../types/table";
-import { ArrowUpDown } from "lucide-react";
-
-// --- Columnas Dinámicas ---
-const createHistoryColumns = (
-  onEdit: (advisory: HistoryAdmin) => void
-): ColumnDef<HistoryAdmin>[] => [
-  {
-    accessorKey: "advisoryDate",
-    header: "Fecha",
-    cell: ({ row }) =>
-      row.original.advisoryDate
-        ? new Date(row.original.advisoryDate).toLocaleDateString("es-MX", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })
-        : "N/A",
-  },
-  {
-    accessorKey: "teacher.fullName",
-    header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 m-0 flex items-center gap-2"
-        >
-          Nombre del profesor
-          <ArrowUpDown size={15} />
-        </button>
-      );
-    },
-  },
-  {
-    accessorKey: "student.fullName",
-    header: "Alumnos asignados",
-  },
-  {
-    accessorKey: "student.semester",
-    header: "Semestre",
-  },
-  {
-    accessorKey: "subject.name",
-    header: "Materia",
-  },
-  {
-    id: "actions",
-    header: () => <div className="text-right"></div>,
-    cell: ({ row }) => (
-      <div className="text-right">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onEdit(row.original)}
-        >
-          Editar
-        </Button>
-        <Button variant="outline" size="sm" onClick={() => ""}>
-          Descargar PDF
-        </Button>
-      </div>
-    ),
-  },
-];
+import { createHistoryColumnsAdmin } from "@/const/History";
 
 const Page = () => {
   const [allAdvisories, setAllAdvisories] = useState<HistoryAdmin[]>([]);
@@ -94,8 +27,6 @@ const Page = () => {
     }
   }, []);
 
-  console.log(allAdvisories);
-  console.log(advisoryToEdit);
   useEffect(() => {
     document.title = "Historial de Asesorías";
     fetchHistory();
@@ -111,7 +42,7 @@ const Page = () => {
     fetchHistory();
   };
 
-  const columns = useMemo(() => createHistoryColumns(handleEdit), []);
+  const columns = useMemo(() => createHistoryColumnsAdmin(handleEdit), []);
 
   return (
     <section className="mx-16 mt-28 flex-1">
