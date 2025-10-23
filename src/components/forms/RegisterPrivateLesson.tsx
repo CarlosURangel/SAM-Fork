@@ -10,11 +10,12 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { FullStudentData } from "@/const/StudentAssignedTable";
+
 import { TextInput } from "./TextInput";
 import { SelectForm } from "./SelectForm";
 import { DateTimeInput } from "./DateTimeInput";
 import { HistoryAdmin } from "@/types/table";
+import { FullStudentData } from "@/types/advisory";
 
 export type FullAdvisoryData = {
   idAdvisory: string;
