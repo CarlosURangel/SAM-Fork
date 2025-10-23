@@ -1,20 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { on } from "events";
+import { FullStudentData } from "@/types/advisory";
 
-// El tipo completo del objeto que recibimos de la API
-export type FullStudentData = {
-  idStudent: string;
-  expedient: string;
-  fullName: string;
-  semester: number;
-  idCareer: string;
-  career: { name: string };
-};
-
-// Convertimos las columnas en una función que recibe los manejadores de eventos
 export const createStudentColumns = (
   onEdit: (student: FullStudentData) => void,
   onRegister: (student: FullStudentData) => void,
@@ -37,7 +25,7 @@ export const createStudentColumns = (
       ),
     },
     {
-      accessorKey: "career.name", // Accedemos al nombre anidado
+      accessorKey: "career.name",
       header: "Carrera",
     },
     {

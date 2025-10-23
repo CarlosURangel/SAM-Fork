@@ -1,11 +1,10 @@
-import { StudentAssigned, UserManagement } from "@/types/table";
+import { StudentAssigned } from "@/types/table";
 import {
     ColumnDef
 } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
-import Link from "next/link";
-import { FullStudentData } from "./StudentAssignedTable";
 import { Button } from "@/components/ui/button";
+import { FullStudentData } from "@/types/advisory";
 
 
 export const dataStudentAssigned: StudentAssigned[] = [
