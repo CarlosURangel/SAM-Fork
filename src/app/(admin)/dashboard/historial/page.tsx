@@ -6,6 +6,7 @@ import {
 } from "@/components/forms/RegisterPrivateLesson";
 import { HistoryAdmin } from "../../../../types/table";
 import { createHistoryColumnsAdmin } from "@/const/History";
+import { downloadPDF } from "@/lib/downloadPDF";
 
 const Page = () => {
   const [allAdvisories, setAllAdvisories] = useState<HistoryAdmin[]>([]);
@@ -26,30 +27,6 @@ const Page = () => {
       setAllAdvisories([]);
     }
   }, []);
-
-  const downloadPDF = async (idAdvisory: string, exp:string) => {
-    try {
-      const response = await fetch(`/api/pdf/${idAdvisory}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-      });
-      if (!response.ok) throw new Error("Error al cargar el pdf");
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${exp}_asesoria`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
     document.title = "Historial de Asesorías";

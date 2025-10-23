@@ -1,21 +1,21 @@
 "use client";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { StudentDialog } from "@/components/forms/StudentDialog";
-import { AdvisoryDialog } from "@/components/forms/RegisterPrivateLesson"; // Importamos el diálogo
+import { AdvisoryDialog } from "@/components/forms/RegisterPrivateLesson";
 import { TableBase } from "@/components/tables/TableBase";
 import {
-  createStudentColumns,
-  FullStudentData,
+  createStudentColumns
 } from "@/const/StudentAssignedTable";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { FullStudentData } from "@/types/advisory";
+import { getStudents } from "@/lib/dataStudent";
 
 const Page = () => {
   const router = useRouter();
   const [allStudents, setAllStudents] = useState<FullStudentData[]>([]);
 
-  // Estados para el modal de Alumno
   const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState<FullStudentData | null>(
     null
@@ -23,21 +23,13 @@ const Page = () => {
 
   const colums2Search = ['expedient', 'fullName', 'career.name', 'semester'];
 
-  // Estados para el modal de Asesoría
   const [isAdvisoryModalOpen, setIsAdvisoryModalOpen] = useState(false);
   const [studentForNewAdvisory, setStudentForNewAdvisory] =
     useState<FullStudentData | null>(null);
 
   const fetchMyStudents = useCallback(async () => {
-    // ... tu código de fetch es correcto
-    try {
-      const response = await fetch("/api/students");
-      if (!response.ok) throw new Error("Error al cargar alumnos");
-      setAllStudents(await response.json());
-    } catch (error) {
-      console.error(error);
-      setAllStudents([]);
-    }
+    const data = await getStudents()
+    setAllStudents(data)
   }, []);
 
   useEffect(() => {
@@ -45,7 +37,6 @@ const Page = () => {
     fetchMyStudents();
   }, [fetchMyStudents]);
 
-  // --- Manejadores de acciones ---
   const handleEditStudent = (student: FullStudentData) => {
     setStudentToEdit(student);
     setIsStudentModalOpen(true);
@@ -74,13 +65,11 @@ const Page = () => {
 
   const handleAdvisoryActionComplete = () => {
     setIsAdvisoryModalOpen(false);
-    // No es necesario refrescar la tabla de alumnos aquí
   };
 
-  const columns = useMemo(
-    () => createStudentColumns(handleEditStudent, handleRegisterAdvisory, handleViewHistory),
-    []
-  );
+  const columns = useMemo(() =>
+    createStudentColumns(handleEditStudent, handleRegisterAdvisory, handleViewHistory)
+    , []);
 
   return (
     <section className="mx-16 mt-28 flex-1">
@@ -102,7 +91,6 @@ const Page = () => {
         onOpenChange={setIsStudentModalOpen}
       />
 
-      {/* Le pasamos la prop 'studentForNew' para indicar que es modo CREAR */}
       <AdvisoryDialog
         studentForNew={studentForNewAdvisory}
         onActionComplete={handleAdvisoryActionComplete}
