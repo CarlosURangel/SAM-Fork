@@ -2,7 +2,7 @@
 
 // Tipo de dato para los elementos del gráfico
 export interface DataChartTutoringPerSubject {
-  id: string;
+  id?: string;
   subject: string;
   count: number;
   fill?: string;
