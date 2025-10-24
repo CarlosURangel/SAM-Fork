@@ -73,11 +73,13 @@ export const StudentDialog = ({
   onActionComplete,
   open,
   onOpenChange,
+  cveMaestro,
 }: {
   studentToEdit: StudentData | null; // Si es null, creamos. Si tiene datos, editamos.
   onActionComplete: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  cveMaestro?: string;
 }) => {
   // Estados del formulario
   const [fullName, setFullName] = useState("");
@@ -136,6 +138,7 @@ export const StudentDialog = ({
           expedient,
           semester: Number(semester),
           idCareer,
+          cveMaestroBody: cveMaestro ?? "",
         }),
       });
 
@@ -184,6 +187,7 @@ export const StudentDialog = ({
               value={fullName}
               onChange={setFullName}
               className="col-span-2"
+              maxLength={70}
             />
             <TextInput
               label="Expediente:"
@@ -191,12 +195,14 @@ export const StudentDialog = ({
               onChange={setExpedient}
               className="col-span-1"
               disabled={isEditMode}
+              maxLength={6}
+              type="number"
             />
             <SelectForm
               label="Semestre:"
               value={semester}
               onValueChange={setSemester}
-              options={Array.from({ length: 9 }, (_, i) => ({
+              options={Array.from({ length: 8 }, (_, i) => ({
                 value: String(i + 1),
                 label: `${i + 1}° Semestre`,
               }))}

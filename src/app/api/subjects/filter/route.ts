@@ -14,10 +14,11 @@ export async function POST(req: NextRequest) {
       );
     }
     const payload = verify(authToken, process.env.JWT_SECRET!);
-    const cveMaestro =
+     const cveMaestro =
       typeof payload === "object" ? payload.cveMaestro : undefined;
+    const cveAdmin = typeof payload === "object" ? payload.cveAdmin : undefined;
 
-    if (!cveMaestro) {
+    if (!cveMaestro && !cveAdmin) {
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
     const { idCareer, semester } = await req.json();

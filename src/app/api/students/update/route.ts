@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
-import { verify } from 'jsonwebtoken'
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { verify } from "jsonwebtoken";
+import { Prisma } from "@prisma/client";
 
 export async function PUT(req: NextRequest) {
   try {
@@ -22,23 +23,55 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
 
-    const { idStudent, fullName, expedient, semester, idCareer } = await req.json()
+    const { idStudent, fullName, expedient, semester, idCareer } =
+      await req.json();
 
-    if (typeof fullName !== 'string' || fullName.length < 8) {
-      return NextResponse.json({ error: 'El nombre completo debe ser un string de al menos 8 caracteres.' }, { status: 400 })
+    if (typeof fullName !== "string" || fullName.length < 8) {
+      return NextResponse.json(
+        {
+          error:
+            "El nombre completo debe ser un string de al menos 8 caracteres.",
+        },
+        { status: 400 }
+      );
     }
 
     if (!/^\d{6}$/.test(expedient)) {
-      return NextResponse.json({ error: 'El expediente debe ser exactamente de una longitud de 6' }, { status: 400 })
+      return NextResponse.json(
+        { error: "El expediente debe ser exactamente de una longitud de 6" },
+        { status: 400 }
+      );
     }
 
-    const semestreNum = Number(semester)
+    const semestreNum = Number(semester);
     if (isNaN(semestreNum) || semestreNum < 1 || semestreNum > 8) {
-      return NextResponse.json({ error: 'El semestre debe ser un número entre 1 y 8.' }, { status: 400 })
+      return NextResponse.json(
+        { error: "El semestre debe ser un número entre 1 y 8." },
+        { status: 400 }
+      );
     }
 
     if (!idCareer) {
-      return NextResponse.json({ error: 'La carrera es obligatoria.' }, { status: 400 })
+      return NextResponse.json(
+        { error: "La carrera es obligatoria." },
+        { status: 400 }
+      );
+    }
+
+    const existingStudent = await prisma.students.findFirst({
+      where: {
+        fullName,
+        NOT: {
+          idStudent: idStudent,
+        },
+      },
+    });
+
+    if (existingStudent) {
+      return NextResponse.json(
+        { error: "Ya existe otro alumno con ese nombre." },
+        { status: 409 }
+      );
     }
 
     const student = await prisma.students.update({
@@ -50,12 +83,24 @@ export async function PUT(req: NextRequest) {
         idCareer,
         cveMaestro,
       },
-    })
-    return NextResponse.json(student, { status: 201 })
+    });
+    return NextResponse.json(student, { status: 201 });
   } catch (error: any) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        const target = (error.meta as { target?: string[] })?.target;
+        if (target?.includes("fullName")) {
+          return NextResponse.json(
+            { error: "El nombre completo ya existe." },
+            { status: 409 }
+          );
+        }
+      }
+    }
+
     return NextResponse.json(
-      { error: error.message || 'Error al crear alumno' },
+      { error: error.message || "Error al crear alumno" },
       { status: 500 }
-    )
+    );
   }
 }

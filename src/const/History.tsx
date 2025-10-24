@@ -3,115 +3,66 @@ import {
 } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Link from "next/link";
 import { HistoryAdmin } from "@/types/table";
 
-
-export const dataHistoryAdmin: HistoryAdmin[] = [
-    {
-        date: "17/03/2024",
-        nameTeacher: "Juan Perez",
-        students: "Constantino Abraham",
-        semester: "6",
-        subject: "Programación Orientada en Objetos",
-    },
-    {
-        date: "15/03/2024",
-        nameTeacher: "María Gómez",
-        students: "Ana María López",
-        semester: "4",
-        subject: "Estructuras de Datos",
-    },
-    {
-        date: "10/03/2024",
-        nameTeacher: "Carlos Rodríguez",
-        students: "Luis Fernando Martínez",
-        semester: "8",
-        subject: "Bases de Datos Avanzadas",
-    },
-    {
-        date: "05/03/2024",
-        nameTeacher: "Laura Fernández",
-        students: "Sofía Hernández",
-        semester: "2",
-        subject: "Introducción a la Programación",
-    },
-    {
-        date: "01/03/2024",
-        nameTeacher: "Miguel Sánchez",
-        students: "Diego Ramírez",
-        semester: "10",
-        subject: "Desarrollo de Aplicaciones Móviles",
-    },
-]
-
-export const columnsHistoryAdmin: ColumnDef<HistoryAdmin>[] = [
-    {
-        accessorKey: "date",
-        header: "Fecha",
-        cell: ({ row }) => (
-            <div className="capitalize" > {row.getValue("date")} </div>
-        ),
-    },
-    {
-        accessorKey: "nameTeacher",
-        header: ({ column }) => {
-            return (
-                <button
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                    className="p-0 m-0 flex items-center gap-2"
-                >
-                    Nombre del profesor
-                    < ArrowUpDown size={15}/>
-                </button>
-            )
+export const createHistoryColumnsAdmin = (
+    onEdit: (advisory: HistoryAdmin) => void,
+    downloadPDF: (idAdvisory: string, exp: string) => void,
+): ColumnDef<HistoryAdmin>[] => [
+        {
+            accessorKey: "advisoryDate",
+            header: "Fecha",
+            cell: ({ row }) =>
+                row.original.advisoryDate
+                    ? new Date(row.original.advisoryDate).toLocaleDateString("es-MX", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                    })
+                    : "N/A",
         },
-        cell: ({ row }) => <div> {row.getValue("nameTeacher")} </div>,
-    },
-    {
-        accessorKey: "students",
-        header: "Alumnos asignados",
-        cell: ({ row }) => (
-            <div className="capitalize" > {row.getValue("students")} </div>
-        ),
-    },
-    {
-        accessorKey: "semester",
-        header: "Semestre",
-        cell: ({ row }) => (
-            <div className="capitalize" > {row.getValue("semester")} </div>
-        ),
-    },
-    {
-        accessorKey: "subject",
-        header: "Materia",
-        cell: ({ row }) => (
-            <div className="capitalize" > {row.getValue("subject")} </div>
-        ),
-    },
-    {
-        accessorKey: "edit",
-        header: "",
-        cell: ({ row }) => (
-            <Link
-                href={``}
-                className="text-blue-600 underline"
-            >
-                Editar
-            </Link>
-        ),
-    },
-    {
-        accessorKey: "download",
-        header: "",
-        cell: ({ row }) => (
-            <Link
-                href={``}
-                className="text-blue-600 underline"
-            >
-                Descargar PDF
-            </Link>
-        ),
-    },
-]
+        {
+            accessorKey: "teacher.fullName",
+            header: ({ column }) => {
+                return (
+                    <button
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                        className="p-0 m-0 flex items-center gap-2"
+                    >
+                        Nombre del profesor
+                        <ArrowUpDown size={15} />
+                    </button>
+                );
+            },
+        },
+        {
+            accessorKey: "student.fullName",
+            header: "Alumnos asignados",
+        },
+        {
+            accessorKey: "student.semester",
+            header: "Semestre",
+        },
+        {
+            accessorKey: "subject.name",
+            header: "Materia",
+        },
+        {
+            id: "actions",
+            header: () => <div className="text-right"></div>,
+            cell: ({ row }) => (
+                <div className="text-right">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onEdit(row.original)}
+                    >
+                        Editar
+                    </Button>
+                    <Button id="idAdvisory" variant="outline" size="sm" onClick={() => downloadPDF(row.original.idAdvisory, row.original.student.expedient)}>
+                        Descargar PDF
+                    </Button>
+                </div>
+            ),
+        },
+    ];

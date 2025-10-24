@@ -1,3 +1,4 @@
+import { FullStudentData } from "@/const/StudentAssignedTable";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type UserManagement = {
@@ -9,11 +10,15 @@ export type UserManagement = {
 };
 
 export type HistoryAdmin = {
-  date: string;
+  idAdvisory: string;
+  advisoryDate: string | null;
+  topic: string | null;
+  cveMaestro: string;
+  status: string;
+  student: FullStudentData;
+  subject: { idSubject: string; name: string };
   nameTeacher: string;
-  students: string;
   semester: string;
-  subject: string;
 };
 export type HistoryUser = {
   date: string;
@@ -33,6 +38,6 @@ export type StudentAssigned = {
 export type TableBaseProps<TData> = {
   data: TData[];
   columns: ColumnDef<TData, any>[];
-  searchBy?: keyof TData | (keyof TData)[];
+  searchBy?: string | string[];
   searchValue?: string;
 };

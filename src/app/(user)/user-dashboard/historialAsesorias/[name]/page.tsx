@@ -3,29 +3,27 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { TableBase } from "@/components/tables/TableBase";
 import {
   AdvisoryDialog,
+  FullAdvisoryData,
 } from "@/components/forms/RegisterPrivateLesson";
-import { HistoryAdmin } from "../../../../types/table";
-import { createHistoryColumnsAdmin } from "@/const/History";
 import { downloadPDF } from "@/lib/downloadPDF";
+import { createHistoryColumns } from "@/const/AsesoriaHistory";
+import { colums2Search } from "@/const/historyPages/historyTeacher";
+import { getHistory } from "@/lib/dataHistory";
+import { useParams } from "next/navigation";
 
 const Page = () => {
-  const [allAdvisories, setAllAdvisories] = useState<HistoryAdmin[]>([]);
+  const [allAdvisories, setAllAdvisories] = useState<FullAdvisoryData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [advisoryToEdit, setAdvisoryToEdit] = useState<HistoryAdmin | null>(
+  const [advisoryToEdit, setAdvisoryToEdit] = useState<FullAdvisoryData | null>(
     null
   );
 
-  const colums2Search = ["student.fullName", "subject.name"];
+  const params = useParams()
+  const studentName = params.name?.toString().replaceAll("%20", " ") || "";
 
   const fetchHistory = useCallback(async () => {
-    try {
-      const response = await fetch("/api/advisories/");
-      if (!response.ok) throw new Error("Error al cargar el historial");
-      setAllAdvisories(await response.json());
-    } catch (error) {
-      console.error(error);
-      setAllAdvisories([]);
-    }
+    const data = await getHistory()
+    setAllAdvisories(data)
   }, []);
 
   useEffect(() => {
@@ -33,7 +31,8 @@ const Page = () => {
     fetchHistory();
   }, [fetchHistory]);
 
-  const handleEdit = (advisory: HistoryAdmin) => {
+
+  const handleEdit = (advisory: FullAdvisoryData) => {
     setAdvisoryToEdit(advisory);
     setIsModalOpen(true);
   };
@@ -43,7 +42,7 @@ const Page = () => {
     fetchHistory();
   };
 
-  const columns = useMemo(() => createHistoryColumnsAdmin(handleEdit, downloadPDF,), []);
+  const columns = useMemo(() => createHistoryColumns(handleEdit, downloadPDF), []);
 
   return (
     <section className="mx-16 mt-28 flex-1">
@@ -58,10 +57,11 @@ const Page = () => {
         onActionComplete={handleActionComplete}
       />
 
-      <TableBase<HistoryAdmin>
+      <TableBase<FullAdvisoryData>
         data={allAdvisories}
         columns={columns}
         searchBy={colums2Search}
+        searchValue={studentName}
       />
     </section>
   );
