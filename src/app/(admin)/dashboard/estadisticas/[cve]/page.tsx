@@ -70,16 +70,19 @@ export default function page() {
 
   }, []);
 
+  console.log(statistics);
+  
+
   return (
     <section className='mx-16 mt-28 flex-1'>
       <h1 className='text-3xl mb-10'>Estadísticas</h1>
-      <Card className="flex flex-col gap-4">
+      <Card className="flex flex-col gap-4 mb-4">
         <CardHeader className="items-center pb-0">
           <CardTitle className="text-xl lg:text-2xl">{statistics?.name}</CardTitle>
           <CardDescription className="text-base lg:text-lg">Desgloce de {statistics?.totalAdvisories} asesorías</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 grid grid-cols-2 pb-0">
-          {config && (
+          {config && advisories && advisories.length > 0 ? (
             <>
               < ChartContainer
                 config={config}
@@ -101,6 +104,8 @@ export default function page() {
                 ))}
               </div>
             </>
+          ):(
+            <div className="w-full flex justify-center items-center text-xl lg:text-3xl font-semibold col-span-2 h-[60vh]">No hay datos para mostrar</div>
           )
           }
 

@@ -36,10 +36,21 @@ export async function GET(
       },
     });
 
-    let name: string | null = null;
+    let name: string | null | undefined = null;
     if (allAdvisories.length > 0) {
       name = allAdvisories[0].teacher?.fullName ?? null;
     } 
+    else{
+      const result = await prisma.teachers.findUnique({
+        where: {
+          cveMaestro
+        },
+        select:{
+          fullName:true
+        }
+      })
+      name = result?.fullName
+    }
 
     const statsBySubject = new Map<
       string,

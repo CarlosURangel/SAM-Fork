@@ -1,14 +1,12 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { TableBase } from '@/components/tables/TableBase';
-import { StudentAssigned } from '@/types/table';
 import { createStudentsColumns } from '@/const/StudentAssigned';
 import { useParams, useRouter } from 'next/navigation';
-import { studentsApi } from '@/types/apis';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
-import { FullStudentData } from '@/const/StudentAssignedTable';
 import { StudentDialog } from '@/components/forms/StudentDialog';
+import { FullStudentData } from '@/types/advisory';
 
 
 const page = () => {
@@ -19,7 +17,6 @@ const page = () => {
     const [allStudents, setAllStudents] = useState<FullStudentData[]>([]);
     const [teacher, setTeacher] = useState<string>('');
 
-    // Estados para el modal de Alumno
     const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
     const [studentToEdit, setStudentToEdit] = useState<FullStudentData | null>(
         null
