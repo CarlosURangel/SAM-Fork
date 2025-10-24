@@ -10,72 +10,59 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
 } from "@/components/ui/chart"
 import { useParams } from "next/navigation"
 import { getStatisticsByTeacher } from "@/lib/dataStatistics"
 import { useEffect, useState } from "react"
-import { Advisory, Statistics } from "@/types/statisctics"
+import { Advisory, AdvisoryChar, Statistics } from "@/types/statisctics"
+import { DataChartTutoringPerSubject } from "@/types/chart"
+import { ordenarYColorearPorCantidad } from "@/lib/colorUtils"
+import { Label } from "@/components/ui/label"
 
-export const description = "A pie chart with a legend"
-
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-]
-
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "var(--chart-1)",
-  },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2)",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "var(--chart-3)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
-  },
-} satisfies ChartConfig
+type ChartConfig = {
+  [key: string]: {
+    label: string;
+    color?: string;
+  };
+};
 
 export default function page() {
   const params = useParams()
   const cve = params.cve?.toString()
   const [statistics, setStatistics] = useState<Statistics>()
-  const [advisories, setAdvisories] = useState<Advisory[]>()
-  console.log(statistics);
+  const [advisories, setAdvisories] = useState<AdvisoryChar[]>()
+  const [config, setConfig] = useState<ChartConfig>()
 
   useEffect(() => {
     document.title = 'Estadísticas';
 
     if (cve) {
       const fetch = async () => {
-        const data:Statistics = await getStatisticsByTeacher(cve)
+        const data: Statistics = await getStatisticsByTeacher(cve)
         setStatistics(data)
-        const dataA = data?.advisories.map((advisory) => ({
+        const dataA: AdvisoryChar[] = data?.advisories.map((advisory: Advisory) => ({
           subject: advisory.name,
-          total: advisory.total,
+          count: advisory.total,
           fill: '#8884d8'
         }))
-        setAdvisories(dataA)
+        const chartData: DataChartTutoringPerSubject[] = ordenarYColorearPorCantidad(dataA);
+        setAdvisories(chartData)
+        const chartConfig = chartData.reduce(
+          (config, item) => {
+            config[item.subject] = {
+              label: item.subject,
+              color: item.fill,
+            };
+            return config;
+          },
+          {
+            count: {
+              label: "count",
+            },
+          } as ChartConfig
+        );
+        setConfig(chartConfig)
       }
       fetch()
 
@@ -83,39 +70,42 @@ export default function page() {
 
   }, []);
 
-  useEffect(() => {
-    const data = advisories?.advisories.map((advisory) => ({
-      subject: advisory.name,
-      total: advisory.total,
-      fill: '#8884d8'
-    }))
-
-    console.log(data);
-  }, [advisories])
-
   return (
     <section className='mx-16 mt-28 flex-1'>
       <h1 className='text-3xl mb-10'>Estadísticas</h1>
-      <Card className="flex flex-col">
+      <Card className="flex flex-col gap-4">
         <CardHeader className="items-center pb-0">
-          <CardTitle>{statistics?.name}</CardTitle>
-          <CardDescription>Desgloce de {statistics?.totalAdvisories} asesorías</CardDescription>
+          <CardTitle className="text-xl lg:text-2xl">{statistics?.name}</CardTitle>
+          <CardDescription className="text-base lg:text-lg">Desgloce de {statistics?.totalAdvisories} asesorías</CardDescription>
         </CardHeader>
-        <CardContent className="flex-1 pb-0">
-          <ChartContainer
-            config={chartConfig}
-            className="mx-auto aspect-square max-h-[300px]"
-          >
-            <PieChart>
-              <Pie data={chartData} dataKey="visitors" />
-              <ChartLegend
-                content={<ChartLegendContent nameKey="browser" />}
-                className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
-              />
-            </PieChart>
-          </ChartContainer>
+        <CardContent className="flex-1 grid grid-cols-2 pb-0">
+          {config && (
+            <>
+              < ChartContainer
+                config={config}
+                className="aspect-square max-h-[60vh]"
+              >
+                <PieChart className="w-full">
+                  <Pie data={advisories} dataKey="count" />
+                </PieChart>
+              </ChartContainer>
+              <div className="flex flex-col justify-center gap-6">
+                {advisories?.map((subject, indx) => (
+                  <div key={indx} className="flex items-center gap-3">
+                    <div
+                      className="w-5 h-5 lg:w-10 lg:h-10"
+                      style={{ backgroundColor: subject.fill }}
+                    ></div>
+                    <Label htmlFor="terms" className="text-lg lg:text-xl">{subject.subject}</Label>
+                  </div>
+                ))}
+              </div>
+            </>
+          )
+          }
+
         </CardContent>
       </Card>
-    </section>
+    </section >
   )
 }
