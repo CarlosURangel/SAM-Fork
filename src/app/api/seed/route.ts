@@ -7,6 +7,24 @@ export async function POST(req: NextRequest) {
   try {
     await prisma.subjects.deleteMany({});
     await prisma.careers.deleteMany({});
+    await prisma.admin.deleteMany({});
+
+    const adminsPath = path.join(process.cwd(), "admins.json");
+    if (fs.existsSync(adminsPath)) {
+      const adminsData = JSON.parse(fs.readFileSync(adminsPath, "utf-8"));
+      if (Array.isArray(adminsData) && adminsData.length > 0) {
+        const adminsToInsert = adminsData.map((a: any) => ({
+          idAdmin: a.idAdmin,
+          name: a.name,
+          rol: a.rol ?? "admin",
+          cveAdmin: a.cveAdmin,
+        }));
+        await prisma.admin.createMany({
+          data: adminsToInsert,
+          skipDuplicates: true,
+        });
+      }
+    }
 
     const filePath = path.join(process.cwd(), "carreras.json");
     const data = fs.readFileSync(filePath, "utf-8");
