@@ -6,6 +6,38 @@ export async function POST(req: NextRequest) {
   try {
     const { nombre, cve } = await req.json();
 
+    const admin = await prisma.admin.findUnique({
+      where: { cveAdmin: cve },
+    });
+
+    if (admin && admin.name === nombre) {
+      const payload = {
+        id: admin.idAdmin,
+        cveAdmin: admin.cveAdmin,
+        name: admin.name,
+        rol: "admin",
+      };
+      const token = sign(payload, process.env.JWT_SECRET!, {
+        expiresIn: "8h",
+      });
+
+      const response = NextResponse.json(
+        {
+          message: "Inicio de sesión exitoso",
+          rol: "admin",
+        },
+        { status: 200 }
+      );
+      response.cookies.set("Auth_SAM", token, {
+        httpOnly: true,
+        path: "/",
+        maxAge: 60 * 60 * 8,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
+      return response;
+    }
+
     const apiRes = await fetch(`${process.env.API_URL}${cve}`);
     const apiData = await apiRes.json();
 
@@ -38,39 +70,7 @@ export async function POST(req: NextRequest) {
       const response = NextResponse.json(
         {
           message: "Inicio de sesión exitoso",
-          rol: "teacher", //Devuelve el Rol del usuario para después abrir el dashboard correspondiente
-        },
-        { status: 200 }
-      );
-      response.cookies.set("Auth_SAM", token, {
-        httpOnly: true,
-        path: "/",
-        maxAge: 60 * 60 * 8,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-      });
-      return response;
-    }
-
-    const admin = await prisma.admin.findUnique({
-      where: { cveAdmin: cve },
-    });
-
-    if (admin && admin.name === nombre) {
-      const payload = {
-        id: admin.idAdmin,
-        cveAdmin: admin.cveAdmin,
-        name: admin.name,
-        rol: "admin",
-      };
-      const token = sign(payload, process.env.JWT_SECRET!, {
-        expiresIn: "8h",
-      });
-
-      const response = NextResponse.json(
-        {
-          message: "Inicio de sesión exitoso",
-          rol: "admin", //Añadí el Rol del usuario para después abrir el dashboard correspondiente
+          rol: "teacher",
         },
         { status: 200 }
       );
