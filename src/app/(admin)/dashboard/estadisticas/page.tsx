@@ -10,9 +10,6 @@ import { ordenarYColorearPorCantidad } from '@/lib/colorUtils';
 const page = () => {
 
     const [dataChartTutoringPerSubject, setDataChartTutoringPerSubject] = useState<DataChartTutoringPerSubject[]>([]);
-    console.log(dataChartTutoringPerSubject);
-    
-
 
     useEffect(() => {
         document.title = 'Estadísticas';

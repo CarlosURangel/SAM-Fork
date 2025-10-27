@@ -12,7 +12,7 @@ export interface ChartDataItem {
 }
 
 export interface DataChartTutoringPerSubject {
-  id: string;
+  id?: string;
   subject: string;
   count: number;
   fill: string;

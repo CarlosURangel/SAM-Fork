@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -150,10 +151,26 @@ export const StudentDialog = ({
         );
       }
 
-      onActionComplete(); // Llama a la función para refrescar la tabla
-      onOpenChange(false); // Cierra el modal
+      toast.success(
+        isEditMode
+          ? "Alumno actualizado exitosamente"
+          : "Alumno añadido exitosamente",
+        {
+          description: `El alumno ${fullName} ha sido guardado.`,
+        }
+      );
+
+      onActionComplete();
+      onOpenChange(false);
     } catch (err: any) {
       setError(err.message);
+
+      toast.error(
+        `Error al ${isEditMode ? "actualizar" : "guardar"} el alumno`,
+        {
+          description: err.message,
+        }
+      );
     }
   };
 
@@ -173,7 +190,7 @@ export const StudentDialog = ({
         if (!open) resetForm();
       }}
     >
-      <DialogContent className="w-full grid items-center gap-8 md:gap-12 max-w-[40vw] p-10">
+      <DialogContent className="w-full grid items-center gap-6 md:gap-12 max-w-[90vw] md:max-w-xl p-6 md:p-10">
         <DialogHeader>
           <DialogTitle className="text-center font-medium text-2xl">
             {isEditMode ? "Editar Alumno" : "Añadir Alumno"}
@@ -181,19 +198,19 @@ export const StudentDialog = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+          <div className="grid grid-cols-5 md:grid-cols-2 gap-7">
             <TextInput
               label="Nombre Completo:"
               value={fullName}
               onChange={setFullName}
-              className="col-span-2"
+              className="col-span-5 md:col-span-2"
               maxLength={70}
             />
             <TextInput
               label="Expediente:"
               value={expedient}
               onChange={setExpedient}
-              className="col-span-1"
+              className="col-span-2 md:col-span-1"
               disabled={isEditMode}
               maxLength={6}
               type="number"
@@ -206,7 +223,7 @@ export const StudentDialog = ({
                 value: String(i + 1),
                 label: `${i + 1}° Semestre`,
               }))}
-              className="col-span-1"
+              className="col-span-3 md:col-span-1"
             />
             <SelectForm
               label="Carrera:"
@@ -216,14 +233,18 @@ export const StudentDialog = ({
                 value: c.idCareer,
                 label: c.name,
               }))}
-              className="col-span-2"
+              className="col-span-5 md:col-span-2"
             />
           </div>
           {error && (
             <p className="text-red-500 text-sm text-center -mt-4">{error}</p>
           )}
+
           <DialogFooter className="h-11 justify-center">
-            <Button type="submit" className="h-full w-80 bg-[#083C6E]">
+            <Button
+              type="submit"
+              className="h-full w-full md:w-80 bg-[#083C6E]"
+            >
               {isEditMode ? "Guardar Cambios" : "Añadir Alumno"}
             </Button>
           </DialogFooter>
