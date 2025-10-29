@@ -185,7 +185,6 @@ export const AdvisoryDialog = ({
         if (!open) resetForm();
       }}
     >
-      {/* El DialogContent responsivo se mantiene */}
       <DialogContent className="w-full grid items-center gap-8 md:gap-12 max-w-[90vw] md:max-w-3xl p-6 md:p-10 overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center font-medium text-2xl">
@@ -194,33 +193,22 @@ export const AdvisoryDialog = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          {/* Este grid ya está perfecto: 1 columna en móvil, 6 en desktop */}
           <div className="grid grid-cols-1 md:grid-cols-6 gap-7">
             <TextInput
               label="Alumno:"
               value={student?.fullName || ""}
               onChange={() => {}}
-              className="col-span-6" // 100% en ambas vistas
+              className="col-span-6"
               disabled
             />
 
-            {/* --- 1. AQUÍ EL CAMBIO --- */}
-            {/*
-              - col-span-1: (Móvil) Ocupa 1/1 (toda la línea)
-              - md:col-span-3: (Desktop) Ocupa 3/6 (50%)
-            */}
             <DateTimeInput
               label="Fecha de la asesoría:"
               value={advisoryDateTime}
               onChange={setAdvisoryDateTime}
-              className="col-span-1 md:col-span-3"
+              className="col-span-6 md:col-span-3"
             />
 
-            {/* --- 2. AQUÍ EL CAMBIO --- */}
-            {/*
-              - col-span-1: (Móvil) Ocupa 1/1 (toda la línea)
-              - md:col-span-3: (Desktop) Ocupa 3/6 (50%)
-            */}
             <SelectForm
               label="Materia:"
               selectLabel="Materias"
@@ -228,15 +216,10 @@ export const AdvisoryDialog = ({
               value={subjectName}
               onChange={handleSubjectChange}
               options={subjects.map((s) => s.name)}
-              className="col-span-1 md:col-span-3"
+              className="col-span-6 md:col-span-3"
             />
 
-            {/* --- 3. AQUÍ EL CAMBIO --- */}
-            {/*
-              - col-span-1: (Móvil) Ocupa 1/1 (toda la línea)
-              - md:col-span-6: (Desktop) Ocupa 6/6 (100%)
-            */}
-            <div className="grid w-full gap-2 col-span-1 md:col-span-6">
+            <div className="grid w-full gap-2 col-span-6">
               <Label htmlFor="tema">Tema visto:</Label>
               <Textarea
                 id="tema"
@@ -252,7 +235,6 @@ export const AdvisoryDialog = ({
             <p className="text-red-500 text-sm text-center -mt-4">{error}</p>
           )}
 
-          {/* El botón responsivo se mantiene */}
           <DialogFooter className="h-11 justify-center">
             <Button
               type="submit"

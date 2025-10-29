@@ -73,7 +73,9 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="py-8 rounded-sm">
         <CardHeader className="text-center pb-8">
-          <CardTitle className="text-3xl font-normal">FIF Asesorías</CardTitle>
+          <CardTitle className="text-3xl font-normal">
+            Control de Asesorías y Mentorías (SAM)
+          </CardTitle>
         </CardHeader>
         <CardContent className="pt-18">
           <form onSubmit={handleSubmit}>
