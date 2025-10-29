@@ -70,9 +70,6 @@ export default function page() {
 
   }, []);
 
-  console.log(statistics);
-  
-
   return (
     <section className='mx-16 mt-28 flex-1'>
       <h1 className='text-3xl mb-10'>Estadísticas</h1>
@@ -81,25 +78,25 @@ export default function page() {
           <CardTitle className="text-xl lg:text-2xl">{statistics?.name}</CardTitle>
           <CardDescription className="text-base lg:text-lg">Desgloce de {statistics?.totalAdvisories} asesorías</CardDescription>
         </CardHeader>
-        <CardContent className="flex-1 grid grid-cols-2 pb-0">
+        <CardContent className="grid grid-cols-2 pb-0">
           {config && advisories && advisories.length > 0 ? (
             <>
               < ChartContainer
                 config={config}
-                className="aspect-square max-h-[60vh]"
+                className="aspect-square max-h-[60vh] justify-self-center"
               >
                 <PieChart className="w-full">
                   <Pie data={advisories} dataKey="count" />
                 </PieChart>
               </ChartContainer>
-              <div className="flex flex-col justify-center gap-6">
+              <div className="flex flex-col justify-center gap-6 py-4">
                 {advisories?.map((subject, indx) => (
-                  <div key={indx} className="flex items-center gap-3">
+                  <div key={indx} className="grid grid-cols-8 gap-3">
                     <div
-                      className="w-5 h-5 lg:w-10 lg:h-10"
+                      className="w-2 h-2 lg:w-5 lg:h-5 justify-self-end self-center"
                       style={{ backgroundColor: subject.fill }}
                     ></div>
-                    <Label htmlFor="terms" className="text-lg lg:text-xl">{subject.subject}</Label>
+                    <Label htmlFor="terms" className="text-base lg:text-lg col-span-7">{subject.subject}</Label>
                   </div>
                 ))}
               </div>
