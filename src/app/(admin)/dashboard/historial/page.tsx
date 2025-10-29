@@ -1,12 +1,11 @@
 "use client";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { TableBase } from "@/components/tables/TableBase";
-import {
-  AdvisoryDialog,
-} from "@/components/forms/RegisterPrivateLesson";
+import { AdvisoryDialog } from "@/components/forms/RegisterPrivateLesson";
 import { HistoryAdmin } from "../../../../types/table";
 import { createHistoryColumnsAdmin } from "@/const/History";
 import { downloadPDF } from "@/lib/downloadPDF";
+import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 const Page = () => {
   const [allAdvisories, setAllAdvisories] = useState<HistoryAdmin[]>([]);
@@ -14,6 +13,8 @@ const Page = () => {
   const [advisoryToEdit, setAdvisoryToEdit] = useState<HistoryAdmin | null>(
     null
   );
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const colums2Search = ["student.fullName", "subject.name"];
 
@@ -25,6 +26,8 @@ const Page = () => {
     } catch (error) {
       console.error(error);
       setAllAdvisories([]);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -43,7 +46,10 @@ const Page = () => {
     fetchHistory();
   };
 
-  const columns = useMemo(() => createHistoryColumnsAdmin(handleEdit, downloadPDF,), []);
+  const columns = useMemo(
+    () => createHistoryColumnsAdmin(handleEdit, downloadPDF),
+    []
+  );
 
   return (
     <section className="mx-16 mt-28 flex-1">
@@ -58,11 +64,15 @@ const Page = () => {
         onActionComplete={handleActionComplete}
       />
 
-      <TableBase<HistoryAdmin>
-        data={allAdvisories}
-        columns={columns}
-        searchBy={colums2Search}
-      />
+      {isLoading ? (
+        <TableSkeleton columnCount={columns.length} rowCount={5} />
+      ) : (
+        <TableBase<HistoryAdmin>
+          data={allAdvisories}
+          columns={columns}
+          searchBy={colums2Search}
+        />
+      )}
     </section>
   );
 };

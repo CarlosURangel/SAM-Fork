@@ -10,6 +10,7 @@ import { createHistoryColumns } from "@/const/AsesoriaHistory";
 import { colums2Search } from "@/const/historyPages/historyTeacher";
 import { getHistory } from "@/lib/dataHistory";
 import { useParams } from "next/navigation";
+import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 const Page = () => {
   const [allAdvisories, setAllAdvisories] = useState<FullAdvisoryData[]>([]);
@@ -18,19 +19,28 @@ const Page = () => {
     null
   );
 
-  const params = useParams()
+  const [isLoading, setIsLoading] = useState(true);
+
+  const params = useParams();
   const studentName = params.name?.toString().replaceAll("%20", " ") || "";
 
   const fetchHistory = useCallback(async () => {
-    const data = await getHistory()
-    setAllAdvisories(data)
+    setIsLoading(true);
+    try {
+      const data = await getHistory();
+      setAllAdvisories(data);
+    } catch (error) {
+      console.error("Error en fetchHistory:", error);
+      setAllAdvisories([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
     document.title = "Historial de Asesorías";
     fetchHistory();
   }, [fetchHistory]);
-
 
   const handleEdit = (advisory: FullAdvisoryData) => {
     setAdvisoryToEdit(advisory);
@@ -42,7 +52,10 @@ const Page = () => {
     fetchHistory();
   };
 
-  const columns = useMemo(() => createHistoryColumns(handleEdit, downloadPDF), []);
+  const columns = useMemo(
+    () => createHistoryColumns(handleEdit, downloadPDF),
+    []
+  );
 
   return (
     <section className="mx-16 mt-28 flex-1">
@@ -57,12 +70,16 @@ const Page = () => {
         onActionComplete={handleActionComplete}
       />
 
-      <TableBase<FullAdvisoryData>
-        data={allAdvisories}
-        columns={columns}
-        searchBy={colums2Search}
-        searchValue={studentName}
-      />
+      {isLoading ? (
+        <TableSkeleton columnCount={columns.length} rowCount={5} />
+      ) : (
+        <TableBase<FullAdvisoryData>
+          data={allAdvisories}
+          columns={columns}
+          searchBy={colums2Search}
+          searchValue={studentName}
+        />
+      )}
     </section>
   );
 };
